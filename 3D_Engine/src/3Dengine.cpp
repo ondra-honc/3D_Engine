@@ -176,8 +176,9 @@ struct mat4 {
     r.y = M.m[1] * v.x + M.m[5] * v.y + M.m[9] * v.z + M.m[13] * v.w;
     r.z = M.m[2] * v.x + M.m[6] * v.y + M.m[10] * v.z + M.m[14] * v.w;
     r.w = M.m[3] * v.x + M.m[7] * v.y + M.m[11] * v.z + M.m[15] * v.w;
-    return r;
 
+    return r;
+  }
 };
 
 class Window {
@@ -322,6 +323,10 @@ public:
     right = Vec3::normalize(Vec3::cross(forward, { 0,1,0 }));
     up = Vec3::normalize(Vec3::cross(right, forward));
   }
+
+  Vec3 getPosition() const { return position; };
+  Vec3 getForward() const { return forward; };
+  Vec3 getUp() const { return up; };
 };
 
 
@@ -332,6 +337,47 @@ int main(int argc, char* argv[]) {
   if (!window.isValid()) {
     return 1;
   }
+
+  const char* vsSrc = R"(
+  #version 330 core
+  layout (location = 0) in vec3 aPos;
+  uniform mat4 uMVP;
+  void main() {
+    gl_Position = uMVP * vec4(aPos, 1.0);
+  }
+  )";
+
+  const char* fsSrc = R"(
+  #version 330 core
+  out vec4 FragColor;
+  void main() {
+    FragColor = vec4(1.0, 0.8, 0.2, 1.0);
+  }
+  )";
+
+  GLuint program = crateProgram(vsSrc, fsSrc);
+  GLint uMVPLoc = glGetUniformLocation(program, "uMVP");
+
+  float verts[] = {
+    -0.5f, -0.5f, -2.0f,
+     0.5f, -0.5f, -2.0f,
+     0.0f,  0.5f, -2.0f
+  };
+
+  GLuint vao, vbo;
+  glGenVertexArrays(1, &vao);
+  glGenBuffers(1, &vbo);
+
+  glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+
+  glEnable(GL_DEPTH_TEST);
 
   SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -356,7 +402,21 @@ int main(int argc, char* argv[]) {
 
     camera.cameraUpdate(input, dt);
     input.resetMouse();
-    window.render();
+
+    mat4 projection = mat4::perspective(90, 800.0f / 600.0f, 0.1f, 100.0f);
+    mat4 view = mat4::lookAt(camera.getPosition(), camera.getPosition() + camera.getForward(), camera.getUp());
+    mat4 mvp = mat4::multiplyMat4Mat4(projection, view);
+
+    glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glUseProgram(program);
+    glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvp.m);
+
+    glBindVertexArray(vao);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    SDL_GL_SwapWindow(SDL_GL_GetCurrentWindow());
   }
 
   return 0;
