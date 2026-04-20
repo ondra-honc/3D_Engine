@@ -10,7 +10,7 @@ struct Vec3 {
   Vec3 operator+(const Vec3& other) const {
     return { x + other.x, y + other.y, z + other.z };
   }
-
+  
   Vec3 operator-(const Vec3& other) const {
     return { x - other.x, y - other.y, z - other.z };
   }
@@ -32,6 +32,10 @@ struct Vec3 {
     z -= other.z;
     return *this;
   }
+
+  float length(Vec3 v) { return sqrt(float(pow(v.x, 2)) + float(pow(v.y, 2)) + float(pow(v.z, 2))); };
+  Vec3 normalize(Vec3 v) { int len = length(v); if (len == 0) return { 0,0,0 }; return { x = v.x / len, y = v.y / len, x = v.z / len }; };
+  Vec3 cross(Vec3 a, Vec3 b) { x = a.y * b.z - a.z * b.y; y = a.z * b.x - a.x * b.z; z = a.x * b.y - a.y * b.x; };
 };
 
 class Window {
@@ -87,7 +91,13 @@ class Window {
 };
 
 class Camera {
-
+  private:
+    Vec3 position;
+    Vec3 forward;
+    Vec3 up;
+    Vec3 right;
+    float speed;
+ 
 };
 
 
@@ -138,7 +148,7 @@ int main(int argc, char* argv[]) {
         running = false;
       }
 
-	  input.handleEvent(event);
+      input.handleEvent(event);
     }
 
     window.render();
