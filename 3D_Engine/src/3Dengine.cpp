@@ -1,7 +1,38 @@
 ﻿#include "3D engine.h"
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
+#include <vector>
 #include <iostream>
+
+struct Vec3 {
+  float x, y, z;
+
+  Vec3 operator+(const Vec3& other) const {
+    return { x + other.x, y + other.y, z + other.z };
+  }
+
+  Vec3 operator-(const Vec3& other) const {
+    return { x - other.x, y - other.y, z - other.z };
+  }
+
+  Vec3 operator*(float scalar) const {
+    return { x * scalar, y * scalar, z * scalar };
+  }
+
+  Vec3& operator+=(const Vec3& other) {
+    x += other.x; 
+    y += other.y;
+    z += other.z;
+    return *this;
+  }
+
+  Vec3& operator-=(const Vec3& other) {
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    return *this;
+  }
+};
 
 class Window {
   private: 
@@ -83,6 +114,11 @@ class InputManager {
         else if (event.key.keysym.sym == SDLK_d) right = false;
       }
     }
+
+    bool isForward() const { return forward; };
+    bool isBackward() const { return backward; };
+    bool isLeft() const { return left; };
+    bool isRight() const { return right; };
 };
 
 
@@ -94,12 +130,15 @@ int main(int argc, char* argv[]) {
 
   bool running = true;
   SDL_Event event;
-
+  InputManager input;
+  
   while (running) {
     while (SDL_PollEvent(&event) != 0) {
       if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
         running = false;
       }
+
+	  input.handleEvent(event);
     }
 
     window.render();
