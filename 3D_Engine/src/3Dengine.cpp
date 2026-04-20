@@ -5,6 +5,46 @@
 #include <cmath>
 #include <iostream>
 
+GLuint compileShader(GLenum type, const char* src) {
+  GLuint shader = glCreateShader(type);
+  glShaderSource(shader, 1, &src, nullptr);
+  glCompileShader(shader);
+
+  int ok;
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
+  
+  if (!ok) {
+    char log[512];
+    glGetShaderInfoLog(shader, 512, nullptr, log);
+    std::cout << "Shader compile error:\n" << log << "\n";
+  }
+
+  return shader;
+}
+
+GLuint crateProgram(const char* vsSrc, const char* fsSrc) {
+  GLuint vs = compileShader(GL_VERTEX_SHADER, vsSrc);
+  GLuint fs = compileShader(GL_FRAGMENT_SHADER, fsSrc);
+
+  GLuint program = glCreateProgram();
+  glAttachShader(program, vs);
+  glAttachShader(program, fs);
+  glLinkProgram(program);
+
+  int ok;
+  glGetProgramiv(program, GL_LINK_STATUS, &ok);
+  if (!ok) {
+    char log[512];
+    glGetProgramInfoLog(program, 512, nullptr, log);
+    std::cout << "Program link error:\n" << log << "\n";
+  }
+
+  glDeleteShader(vs);
+  glDeleteShader(fs);
+
+  return program;
+}
+
 struct Vec3 {
   float x, y, z;
 
