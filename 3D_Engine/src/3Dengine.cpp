@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include <cmath>
+#include <math.h>
 #include <iostream>
 
 GLuint compileShader(GLenum type, const char* src) {
@@ -44,6 +45,10 @@ GLuint crateProgram(const char* vsSrc, const char* fsSrc) {
 
   return program;
 }
+
+struct Vec4 {
+  float x, y, z, w;
+};
 
 struct Vec3 {
   float x, y, z;
@@ -87,6 +92,92 @@ struct Vec3 {
   static Vec3 cross(Vec3 a, Vec3 b) {
     return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
   };
+
+  static float dot(Vec3 a, Vec3 b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+  }
+};
+
+struct mat4 {
+  float m[16] = {
+    0,0,0,0,
+    0,0,0,0,
+    0,0,0,0,
+    0,0,0,0,
+  };
+
+  mat4() {
+    m[0] = m[5] = m[10] = m[15] = 1;
+  }
+
+  static mat4 perspective(float fovDegrees, float aspect, float near, float far) {
+    float fov = fovDegrees * (M_PI / 180);
+
+    mat4 r;
+    for (size_t i = 0; i < 16; i++) r.m[i] = 0;
+
+    float f = 1 / tan(fov / 2);
+
+    r.m[0] = f / aspect;
+    r.m[5] = f;
+    r.m[10] = (far + near) / (near - far);
+    r.m[11] = -1;
+    r.m[14] = (2 * far * near) / (near - far);
+
+    return r;
+  }
+
+  static mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
+    mat4 r;
+    for (size_t i = 0; i < 16; i++) r.m[i] = 0;
+
+    Vec3 f = Vec3::normalize(center - eye);
+    Vec3 s = Vec3::normalize(Vec3::cross(f, up));
+    Vec3 u = Vec3::cross(s, f);
+
+    r.m[0] = s.x;
+    r.m[1] = u.x;
+    r.m[2] = -f.x;
+    
+    r.m[4] = s.y;
+    r.m[5] = u.y;
+    r.m[6] = -f.y;
+
+    r.m[8] = s.z;
+    r.m[9] = u.z;
+    r.m[10] = -f.z;
+
+    r.m[12] = -Vec3::dot(s, eye);
+    r.m[13] = -Vec3::dot(u, eye);
+    r.m[14] = Vec3::dot(f, eye);
+
+    r.m[15] = 1;
+
+    return r;
+  }
+
+  static mat4 multiplyMat4Mat4(const mat4& a, const mat4& b) {
+    mat4 C;
+    for (int i = 0; i < 16; i++) C.m[i] = 0;
+
+    for (int c = 0; c < 4; c++) {
+      for (int r = 0; r < 4; r++) {
+        for (int k = 0; k < 4; k++) {
+          C.m[c * 4 + r] += a.m[k * 4 + r] * b.m[c * 4 + k];
+        }
+      }
+    }
+    return C;
+  }
+
+  static Vec4 multiplyMat4Vec4(const mat4& M, const Vec4& v) {
+    Vec4 r;
+    r.x = M.m[0] * v.x + M.m[4] * v.y + M.m[8] * v.z + M.m[12] * v.w;
+    r.y = M.m[1] * v.x + M.m[5] * v.y + M.m[9] * v.z + M.m[13] * v.w;
+    r.z = M.m[2] * v.x + M.m[6] * v.y + M.m[10] * v.z + M.m[14] * v.w;
+    r.w = M.m[3] * v.x + M.m[7] * v.y + M.m[11] * v.z + M.m[15] * v.w;
+    return r;
+
 };
 
 class Window {
