@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
 #include <vector>
+#include <cmath>
 #include <iostream>
 
 struct Vec3 {
@@ -33,9 +34,19 @@ struct Vec3 {
     return *this;
   }
 
-  float length(Vec3 v) { return sqrt(float(pow(v.x, 2)) + float(pow(v.y, 2)) + float(pow(v.z, 2))); };
-  Vec3 normalize(Vec3 v) { int len = length(v); if (len == 0) return { 0,0,0 }; return { x = v.x / len, y = v.y / len, x = v.z / len }; };
-  Vec3 cross(Vec3 a, Vec3 b) { x = a.y * b.z - a.z * b.y; y = a.z * b.x - a.x * b.z; z = a.x * b.y - a.y * b.x; };
+  static float length(Vec3 v) { 
+    return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); 
+  };
+  
+  static Vec3 normalize(Vec3 v) { 
+    float len = length(v); 
+    if (len == 0) return { 0,0,0 }; 
+    return {v.x / len, v.y / len, v.z / len }; 
+  };
+  
+  static Vec3 cross(Vec3 a, Vec3 b) { 
+    return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x }; 
+  };
 };
 
 class Window {
@@ -97,7 +108,24 @@ class Camera {
     Vec3 up;
     Vec3 right;
     float speed;
- 
+  
+  public:
+    Camera(Vec3 pos, Vec3 forw, Vec3 up_, float spd) {
+      position = pos;
+      forward = Vec3::normalize(forw);
+      up = Vec3::normalize(up_);
+      right = Vec3::normalize(Vec3::cross(forw, up_));
+      speed = spd;
+    }
+
+    void cameraUpdate(const InputManager& input, float dt) {
+      float step = speed * dt;
+
+      if (input.isForward()) position = position + forward * step;
+      if (input.isBackward()) position = position - forward * step;
+      if (input.isLeft()) position = position - right * step;
+      if (input.isRight()) position = position + right * step;
+    }
 };
 
 
@@ -141,16 +169,23 @@ int main(int argc, char* argv[]) {
   bool running = true;
   SDL_Event event;
   InputManager input;
+  Camera camera({0,0,0}, {0,0,-1}, {0,1,0}, 3.0f);
+  float lastTick = SDL_GetTicks();
   
   while (running) {
     while (SDL_PollEvent(&event) != 0) {
       if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
         running = false;
       }
-
+      
       input.handleEvent(event);
     }
+    
+    float current = SDL_GetTicks();
+    float dt = (current - lastTick) / 1000.0f;
+    lastTick = current;
 
+    camera.cameraUpdate(input, dt);
     window.render();
   }
 
