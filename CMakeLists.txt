@@ -17,7 +17,7 @@ find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
 # Source file
-add_executable(My3DEngine "D:/Blbosti XD/c+ cvičení/3D engine/3D_Engine/src/3Dengine.cpp")
+add_executable(My3DEngine "C:/Users/Ondra/Desktop/3D engine/3D_Engine/src/3Dengine.cpp")
 
 # Link everything together
 target_link_libraries(My3DEngine PRIVATE SDL2::SDL2 SDL2::SDL2main glad::glad)

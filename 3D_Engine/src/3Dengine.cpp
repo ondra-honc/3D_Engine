@@ -66,7 +66,7 @@ class InputManager {
     bool backward = false;
     bool left = false;
     bool right = false;
-
+    
   public:
     void handleEvent(const SDL_Event& event) {
       if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
