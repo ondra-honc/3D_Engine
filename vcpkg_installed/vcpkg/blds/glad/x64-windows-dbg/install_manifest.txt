@@ -1,0 +1,7 @@
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/glad.lib
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/include/glad/glad.h
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/include/KHR/khrplatform.h
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladConfig.cmake
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladConfigVersion.cmake
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladTargets.cmake
+C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladTargets-debug.cmake

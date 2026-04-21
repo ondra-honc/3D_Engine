@@ -1,9 +1,11 @@
 {
   "name": "my3dengine",
   "version": "0.1.0",
+  "builtin-baseline": "9c5e11404ae278262988dfe71628b3da657ead81",
   "dependencies": [
     "sdl2",
     "glad",
-    "glm"
+    "glm",
+    "imgui"
   ]
 }

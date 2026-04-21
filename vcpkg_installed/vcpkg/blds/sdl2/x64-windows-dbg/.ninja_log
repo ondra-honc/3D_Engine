@@ -1,0 +1,357 @@
+# ninja log v7
+6	95	7984935339683709	include/SDL2/SDL.h	94370fd938d71aa6
+6	95	7984935339683709	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL.h	94370fd938d71aa6
+11	100	7984935339733711	include/SDL2/SDL_assert.h	a257bdadd265a5dc
+11	100	7984935339733711	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_assert.h	a257bdadd265a5dc
+15	106	7984935339798852	include/SDL2/SDL_atomic.h	2a095c59bfdde5ba
+15	106	7984935339798852	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_atomic.h	2a095c59bfdde5ba
+19	111	7984935339828851	include/SDL2/SDL_audio.h	e684cb0edced65ac
+19	111	7984935339828851	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_audio.h	e684cb0edced65ac
+23	118	7984935339882018	include/SDL2/SDL_bits.h	ab6de19f5ed4372e
+23	118	7984935339882018	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_bits.h	ab6de19f5ed4372e
+27	123	7984935339912048	include/SDL2/SDL_blendmode.h	30cc2218f674742d
+27	123	7984935339912048	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_blendmode.h	30cc2218f674742d
+33	128	7984935339987139	include/SDL2/SDL_clipboard.h	223800799af01fa7
+33	128	7984935339987139	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_clipboard.h	223800799af01fa7
+38	134	7984935340047130	include/SDL2/SDL_copying.h	4f033c29d40081d8
+38	134	7984935340047130	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_copying.h	4f033c29d40081d8
+44	139	7984935340097983	include/SDL2/SDL_cpuinfo.h	d1b4adc4c076f7c5
+44	139	7984935340097983	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_cpuinfo.h	d1b4adc4c076f7c5
+50	145	7984935340169742	include/SDL2/SDL_egl.h	b72e27a567f9ef71
+50	145	7984935340169742	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_egl.h	b72e27a567f9ef71
+56	151	7984935340207503	include/SDL2/SDL_endian.h	8fb61090c8343e7
+56	151	7984935340207503	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_endian.h	8fb61090c8343e7
+62	158	7984935340275150	include/SDL2/SDL_error.h	ffb80584436059a9
+62	158	7984935340275150	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_error.h	ffb80584436059a9
+67	163	7984935340325157	include/SDL2/SDL_events.h	79ce7e77150a5e93
+67	163	7984935340325157	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_events.h	79ce7e77150a5e93
+72	169	7984935340445474	include/SDL2/SDL_filesystem.h	41df30deff29d616
+72	169	7984935340445474	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_filesystem.h	41df30deff29d616
+78	174	7984935340445474	include/SDL2/SDL_gamecontroller.h	a47e6c7a2accd7dd
+78	174	7984935340445474	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_gamecontroller.h	a47e6c7a2accd7dd
+83	180	7984935340490568	include/SDL2/SDL_gesture.h	79d0c3854f812c6c
+83	180	7984935340490568	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_gesture.h	79d0c3854f812c6c
+88	185	7984935340530571	include/SDL2/SDL_guid.h	778a71755b536b62
+88	185	7984935340530571	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_guid.h	778a71755b536b62
+95	192	7984935340595730	include/SDL2/SDL_haptic.h	366fc2e3217b2859
+95	192	7984935340595730	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_haptic.h	366fc2e3217b2859
+101	198	7984935340657383	include/SDL2/SDL_hidapi.h	ea506cd8d394c95d
+101	198	7984935340657383	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_hidapi.h	ea506cd8d394c95d
+106	203	7984935340727451	include/SDL2/SDL_hints.h	e44d4802930bb86a
+106	203	7984935340727451	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_hints.h	e44d4802930bb86a
+111	209	7984935340772537	include/SDL2/SDL_joystick.h	842361c50d1fa1ac
+111	209	7984935340772537	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_joystick.h	842361c50d1fa1ac
+118	215	7984935340855860	include/SDL2/SDL_keyboard.h	be2596f76de4671b
+118	215	7984935340855860	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_keyboard.h	be2596f76de4671b
+123	220	7984935340885913	include/SDL2/SDL_keycode.h	41ac3e45070265a7
+123	220	7984935340885913	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_keycode.h	41ac3e45070265a7
+128	226	7984935340945917	include/SDL2/SDL_loadso.h	bf15d6075b8a6b94
+128	226	7984935340945917	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_loadso.h	bf15d6075b8a6b94
+134	231	7984935340987141	include/SDL2/SDL_locale.h	923c6d6245cb7be5
+134	231	7984935340987141	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_locale.h	923c6d6245cb7be5
+139	237	7984935341062229	include/SDL2/SDL_log.h	917845580f679c75
+139	237	7984935341062229	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_log.h	917845580f679c75
+145	242	7984935341132237	include/SDL2/SDL_main.h	5d2aca4a7cba10f5
+145	242	7984935341132237	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_main.h	5d2aca4a7cba10f5
+151	247	7984935341187349	include/SDL2/SDL_messagebox.h	63561fac5f62c95d
+151	247	7984935341187349	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_messagebox.h	63561fac5f62c95d
+158	254	7984935341227377	include/SDL2/SDL_metal.h	a264143050205155
+158	254	7984935341227377	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_metal.h	a264143050205155
+163	261	7984935341297831	include/SDL2/SDL_misc.h	8c4dc753327583c6
+163	261	7984935341297831	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_misc.h	8c4dc753327583c6
+169	272	7984935341348043	include/SDL2/SDL_mouse.h	b6236fc4eb39e267
+169	272	7984935341348043	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_mouse.h	b6236fc4eb39e267
+175	279	7984935341398087	include/SDL2/SDL_mutex.h	40e705f1566ff96d
+175	279	7984935341398087	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_mutex.h	40e705f1566ff96d
+180	285	7984935341438090	include/SDL2/SDL_name.h	45bbf55608a7dcd5
+180	285	7984935341438090	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_name.h	45bbf55608a7dcd5
+186	291	7984935341513233	include/SDL2/SDL_opengl.h	70efa768e798f523
+186	291	7984935341513233	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengl.h	70efa768e798f523
+192	296	7984935341608355	include/SDL2/SDL_opengl_glext.h	f3b95769464223c5
+192	296	7984935341608355	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengl_glext.h	f3b95769464223c5
+198	303	7984935341598346	include/SDL2/SDL_opengles.h	77f3873d46328087
+198	303	7984935341598346	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengles.h	77f3873d46328087
+203	308	7984935341670157	include/SDL2/SDL_opengles2.h	13cd6160972a17f9
+203	308	7984935341670157	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengles2.h	13cd6160972a17f9
+209	316	7984935341745198	include/SDL2/SDL_opengles2_gl2.h	3cff0f8bb3c4d5e0
+209	316	7984935341745198	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengles2_gl2.h	3cff0f8bb3c4d5e0
+215	322	7984935341795249	include/SDL2/SDL_opengles2_gl2ext.h	75c5cb9f6aba274d
+215	322	7984935341795249	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengles2_gl2ext.h	75c5cb9f6aba274d
+220	328	7984935341850300	include/SDL2/SDL_opengles2_gl2platform.h	2640c7f6f49a0b7f
+220	328	7984935341850300	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengles2_gl2platform.h	2640c7f6f49a0b7f
+226	333	7984935341910406	include/SDL2/SDL_opengles2_khrplatform.h	be622dece11cfa91
+226	333	7984935341910406	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_opengles2_khrplatform.h	be622dece11cfa91
+232	339	7984935342005545	include/SDL2/SDL_pixels.h	2ef74487573528e7
+232	339	7984935342005545	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_pixels.h	2ef74487573528e7
+238	345	7984935342045554	include/SDL2/SDL_platform.h	6d04a00f4155b891
+238	345	7984935342045554	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_platform.h	6d04a00f4155b891
+243	350	7984935342082621	include/SDL2/SDL_power.h	2c7a0d1dc512ec7d
+243	350	7984935342082621	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_power.h	2c7a0d1dc512ec7d
+248	357	7984935342155811	include/SDL2/SDL_quit.h	fd769ceb7af7685b
+248	357	7984935342155811	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_quit.h	fd769ceb7af7685b
+254	362	7984935342276026	include/SDL2/SDL_rect.h	fc1a265092f910b5
+254	362	7984935342276026	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_rect.h	fc1a265092f910b5
+261	368	7984935342351064	include/SDL2/SDL_render.h	516aaaa1a8287e5b
+261	368	7984935342351064	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_render.h	516aaaa1a8287e5b
+273	374	7984935342401162	include/SDL2/SDL_rwops.h	5f9f9f4ffcd6b7fe
+273	374	7984935342401162	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_rwops.h	5f9f9f4ffcd6b7fe
+279	379	7984935342466285	include/SDL2/SDL_scancode.h	deef07e35a08666
+279	379	7984935342466285	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_scancode.h	deef07e35a08666
+285	385	7984935342516272	include/SDL2/SDL_sensor.h	33ff72dadd531b7b
+285	385	7984935342516272	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_sensor.h	33ff72dadd531b7b
+291	391	7984935342576619	include/SDL2/SDL_shape.h	c902d37afa8a3861
+291	391	7984935342576619	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_shape.h	c902d37afa8a3861
+296	397	7984935342638025	include/SDL2/SDL_stdinc.h	f07b6b5b5a9673d1
+296	397	7984935342638025	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_stdinc.h	f07b6b5b5a9673d1
+303	402	7984935342698480	include/SDL2/SDL_surface.h	4d2c90ebfa258a4e
+303	402	7984935342698480	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_surface.h	4d2c90ebfa258a4e
+309	409	7984935342779796	include/SDL2/SDL_system.h	f6a4466af182988f
+309	409	7984935342779796	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_system.h	f6a4466af182988f
+316	415	7984935342819795	include/SDL2/SDL_syswm.h	78f2b0b16bf9e6a3
+316	415	7984935342819795	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_syswm.h	78f2b0b16bf9e6a3
+322	422	7984935342849795	include/SDL2/SDL_test.h	f57a5f9339ad7d10
+322	422	7984935342849795	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test.h	f57a5f9339ad7d10
+328	429	7984935342936426	include/SDL2/SDL_test_assert.h	d2cdf445b6da349
+328	429	7984935342936426	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_assert.h	d2cdf445b6da349
+333	436	7984935343007900	include/SDL2/SDL_test_common.h	e2d6d107221b3a41
+333	436	7984935343007900	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_common.h	e2d6d107221b3a41
+339	441	7984935343027917	include/SDL2/SDL_test_compare.h	51fffe47493474ed
+339	441	7984935343027917	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_compare.h	51fffe47493474ed
+345	447	7984935343098283	include/SDL2/SDL_test_crc32.h	69d5323e1d30dc73
+345	447	7984935343098283	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_crc32.h	69d5323e1d30dc73
+350	453	7984935343193438	include/SDL2/SDL_test_font.h	3520f977d907106e
+350	453	7984935343193438	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_font.h	3520f977d907106e
+357	453	7984935343248468	include/SDL2/SDL_test_fuzzer.h	9e6d139bf6b0c071
+357	453	7984935343248468	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_fuzzer.h	9e6d139bf6b0c071
+362	453	7984935343328591	include/SDL2/SDL_test_harness.h	bc1108d8fb2f1978
+362	453	7984935343328591	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_harness.h	bc1108d8fb2f1978
+368	453	7984935343328591	include/SDL2/SDL_test_images.h	756708391b716d87
+368	453	7984935343328591	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_images.h	756708391b716d87
+374	454	7984935343403660	include/SDL2/SDL_test_log.h	e02190962b3149ab
+374	454	7984935343403660	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_log.h	e02190962b3149ab
+379	454	7984935343508824	include/SDL2/SDL_test_md5.h	551afbef1f7723c3
+379	454	7984935343508824	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_md5.h	551afbef1f7723c3
+385	454	7984935343563961	include/SDL2/SDL_test_memory.h	1c28b494e0fa6e5e
+385	454	7984935343563961	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_memory.h	1c28b494e0fa6e5e
+391	454	7984935343604014	include/SDL2/SDL_test_random.h	ae41569a7b14ad18
+391	454	7984935343604014	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_test_random.h	ae41569a7b14ad18
+397	455	7984935343649063	include/SDL2/SDL_thread.h	cbc9139f4b7b090d
+397	455	7984935343649063	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_thread.h	cbc9139f4b7b090d
+402	455	7984935343749122	include/SDL2/SDL_timer.h	3df5c101b05e1e7a
+402	455	7984935343749122	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_timer.h	3df5c101b05e1e7a
+409	455	7984935343761477	include/SDL2/SDL_touch.h	7ae6cea41d5e104f
+409	455	7984935343761477	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_touch.h	7ae6cea41d5e104f
+415	458	7984935343831482	include/SDL2/SDL_types.h	87b311034904ec90
+415	458	7984935343831482	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_types.h	87b311034904ec90
+422	460	7984935343866571	include/SDL2/SDL_version.h	34c19b0d9d07fecc
+422	460	7984935343866571	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_version.h	34c19b0d9d07fecc
+429	469	7984935343957050	include/SDL2/SDL_video.h	9db2fa7bb8da3990
+429	469	7984935343957050	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_video.h	9db2fa7bb8da3990
+436	472	7984935343987052	include/SDL2/SDL_vulkan.h	5d952f2baef0cdc8
+436	472	7984935343987052	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/SDL_vulkan.h	5d952f2baef0cdc8
+441	476	7984935344027040	include/SDL2/begin_code.h	f24de0c126f4baa0
+441	476	7984935344027040	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/begin_code.h	f24de0c126f4baa0
+447	478	7984935344062129	include/SDL2/close_code.h	d4ee88cffa320c62
+447	478	7984935344062129	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/sdl2/x64-windows-dbg/include/SDL2/close_code.h	d4ee88cffa320c62
+506	670	7984935344372597	CMakeFiles/SDL2.dir/src/atomic/SDL_atomic.c.obj	28d9d64d2435b3bd
+488	677	7984935344197216	CMakeFiles/SDL2.dir/src/SDL_error.c.obj	129f7ee0eeae2414
+503	681	7984935344332324	CMakeFiles/SDL2.dir/src/SDL_utils.c.obj	76adead0e99d5910
+491	685	7984935344217244	CMakeFiles/SDL2.dir/src/SDL_guid.c.obj	d391c5e6bfa06a56
+517	706	7984935344487689	CMakeFiles/SDL2.dir/src/audio/SDL_audiodev.c.obj	42ac95b534c4bb10
+493	712	7984935344247224	CMakeFiles/SDL2.dir/src/SDL_hints.c.obj	5ed5de8609402629
+486	720	7984935344167218	CMakeFiles/SDL2.dir/src/SDL_dataqueue.c.obj	2afc170c0af3c7b4
+524	782	7984935344552748	CMakeFiles/SDL2.dir/src/audio/SDL_mixer.c.obj	63b90ffdc7d65ba6
+520	787	7984935344517695	CMakeFiles/SDL2.dir/src/audio/SDL_audiotypecvt.c.obj	2ccaf87538afe2d6
+496	791	7984935344272318	CMakeFiles/SDL2.dir/src/SDL_list.c.obj	c886c69baf502605
+514	795	7984935344457691	CMakeFiles/SDL2.dir/src/audio/SDL_audiocvt.c.obj	848fca7c6648f6f5
+500	848	7984935344312320	CMakeFiles/SDL2.dir/src/SDL_log.c.obj	d30e93d0356e2bd8
+672	854	7984935346035209	CMakeFiles/SDL2.dir/src/audio/SDL_wave.c.obj	69572f1eaed3bf48
+508	858	7984935344402589	CMakeFiles/SDL2.dir/src/atomic/SDL_spinlock.c.obj	ac300583bde693a7
+478	862	7984935344092134	CMakeFiles/SDL2main.dir/src/main/windows/SDL_windows_main.c.obj	cdf551c2ca82ca96
+483	919	7984935344147179	CMakeFiles/SDL2.dir/src/SDL_assert.c.obj	183cc572ec52bd3f
+481	925	7984935344122128	CMakeFiles/SDL2.dir/src/SDL.c.obj	b5e780106999909e
+685	929	7984935346165498	CMakeFiles/SDL2.dir/src/events/SDL_clipboardevents.c.obj	c87b5dbc9ffc4768
+706	932	7984935346370874	CMakeFiles/SDL2.dir/src/events/SDL_displayevents.c.obj	b21a321f6af7b44e
+712	936	7984935346430893	CMakeFiles/SDL2.dir/src/events/SDL_dropevents.c.obj	55680113519dd8fe
+511	940	7984935344422593	CMakeFiles/SDL2.dir/src/audio/SDL_audio.c.obj	df8c9e24d37c30cc
+791	966	7984935347220982	CMakeFiles/SDL2.dir/src/events/SDL_keysym_to_scancode.c.obj	b5f8af315dae96a9
+677	1009	7984935346080397	CMakeFiles/SDL2.dir/src/cpuinfo/SDL_cpuinfo.c.obj	5d9aa073a2c07430
+782	1015	7984935347135887	CMakeFiles/SDL2.dir/src/events/SDL_gesture.c.obj	5b2181fc179af761
+787	1018	7984935347180984	CMakeFiles/SDL2.dir/src/events/SDL_keyboard.c.obj	710e62926c2fce2c
+854	1049	7984935347857111	CMakeFiles/SDL2.dir/src/events/SDL_scancode_tables.c.obj	364ca76570645c33
+919	1053	7984935348503605	CMakeFiles/SDL2.dir/src/events/imKStoUCS.c.obj	559be20845b68fad
+848	1057	7984935347796961	CMakeFiles/SDL2.dir/src/events/SDL_quit.c.obj	fe3a3baedacfd9cc
+929	1065	7984935348608691	CMakeFiles/SDL2.dir/src/haptic/SDL_haptic.c.obj	7903a0aa37dcf20b
+862	1102	7984935347927107	CMakeFiles/SDL2.dir/src/events/SDL_windowevents.c.obj	7d23675575ca116d
+858	1123	7984935347897124	CMakeFiles/SDL2.dir/src/events/SDL_touch.c.obj	9276d3f7791cefa0
+720	1128	7984935346509796	CMakeFiles/SDL2.dir/src/events/SDL_events.c.obj	ddffcbb0db27204
+936	1131	7984935348673702	CMakeFiles/SDL2.dir/src/joystick/SDL_gamecontroller.c.obj	f59dc7857c714fa2
+795	1135	7984935347266123	CMakeFiles/SDL2.dir/src/events/SDL_mouse.c.obj	193fc63e76d9b14a
+1015	1171	7984935349455729	CMakeFiles/SDL2.dir/src/libm/e_atan2.c.obj	a7e6c4caca5c6daa
+1018	1175	7984935349495736	CMakeFiles/SDL2.dir/src/libm/e_exp.c.obj	420a0ffecbdde08b
+681	1179	7984935346120423	CMakeFiles/SDL2.dir/src/dynapi/SDL_dynapi.c.obj	197e16fc5b5e62eb
+925	1183	7984935348568691	CMakeFiles/SDL2.dir/src/file/SDL_rwops.c.obj	fa970c2d0d7187b0
+1057	1292	7984935349887274	CMakeFiles/SDL2.dir/src/libm/e_log10.c.obj	dc51142563c261f5
+1065	1298	7984935349957327	CMakeFiles/SDL2.dir/src/libm/e_pow.c.obj	803ab8466309dfcc
+1050	1305	7984935349803078	CMakeFiles/SDL2.dir/src/libm/e_fmod.c.obj	32e094b37a87b6ee
+1053	1309	7984935349847218	CMakeFiles/SDL2.dir/src/libm/e_log.c.obj	113fe33eb2aa675
+1009	1313	7984935349400629	CMakeFiles/SDL2.dir/src/joystick/controller_type.c.obj	e160a77cfcb67e17
+1102	1316	7984935350332650	CMakeFiles/SDL2.dir/src/libm/e_rem_pio2.c.obj	9459cc20c925dfb0
+1128	1319	7984935350593858	CMakeFiles/SDL2.dir/src/libm/k_cos.c.obj	47beda472fd4cdf2
+966	1322	7984935348974935	CMakeFiles/SDL2.dir/src/joystick/SDL_steam_virtual_gamepad.c.obj	2045391eae5f6f4f
+1123	1326	7984935350538707	CMakeFiles/SDL2.dir/src/libm/e_sqrt.c.obj	fc1b40a80b3f15ee
+1135	1329	7984935350669005	CMakeFiles/SDL2.dir/src/libm/k_sin.c.obj	87a5de5cb05dadf7
+1175	1333	7984935351064541	CMakeFiles/SDL2.dir/src/libm/s_atan.c.obj	bd6b35b33ec722cf
+1179	1337	7984935351104560	CMakeFiles/SDL2.dir/src/libm/s_copysign.c.obj	1cd282cc4deca206
+1171	1340	7984935351029421	CMakeFiles/SDL2.dir/src/libm/k_tan.c.obj	ec65dd3905924b1
+1131	1343	7984935350623848	CMakeFiles/SDL2.dir/src/libm/k_rem_pio2.c.obj	74f4aa3f382b5349
+1183	1346	7984935351134538	CMakeFiles/SDL2.dir/src/libm/s_cos.c.obj	8c9dca3b85d4921f
+940	1349	7984935348713703	CMakeFiles/SDL2.dir/src/joystick/SDL_joystick.c.obj	3af3b9c37d3c7630
+1326	1446	7984935352577626	CMakeFiles/SDL2.dir/src/render/SDL_d3dmath.c.obj	c11f8e1b8eacf514
+1316	1450	7984935352472511	CMakeFiles/SDL2.dir/src/locale/SDL_locale.c.obj	f025f4e325d76cdc
+1322	1453	7984935352532489	CMakeFiles/SDL2.dir/src/power/SDL_power.c.obj	1d10f418969cf728
+1298	1457	7984935352307235	CMakeFiles/SDL2.dir/src/libm/s_floor.c.obj	feeed770267aecef
+1292	1461	7984935352232081	CMakeFiles/SDL2.dir/src/libm/s_fabs.c.obj	b45841bbb64009f0
+1319	1466	7984935352502485	CMakeFiles/SDL2.dir/src/misc/SDL_url.c.obj	1fda42dfe49524a9
+1305	1471	7984935352367331	CMakeFiles/SDL2.dir/src/libm/s_scalbn.c.obj	2e82e5f12507935a
+1309	1476	7984935352407388	CMakeFiles/SDL2.dir/src/libm/s_sin.c.obj	d472160bca877a62
+1313	1482	7984935352437378	CMakeFiles/SDL2.dir/src/libm/s_tan.c.obj	95a55505524c944
+1330	1512	7984935352607641	CMakeFiles/SDL2.dir/src/render/SDL_render.c.obj	865683a136caeb75
+932	1590	7984935348638692	CMakeFiles/SDL2.dir/src/hidapi/SDL_hidapi.c.obj	29463473c46319ba
+1334	1595	7984935352652703	CMakeFiles/SDL2.dir/src/render/SDL_yuv_sw.c.obj	7fee314225b7095e
+1457	1598	7984935353889936	CMakeFiles/SDL2.dir/src/render/opengles/SDL_render_gles.c.obj	ce417321679a192b
+1471	1624	7984935354025082	CMakeFiles/SDL2.dir/src/render/ps2/SDL_render_ps2.c.obj	3ce67f02470c8a9
+1476	1628	7984935354071001	CMakeFiles/SDL2.dir/src/render/psp/SDL_render_psp.c.obj	4147959b88d060b6
+1466	1631	7984935353975102	CMakeFiles/SDL2.dir/src/render/opengles2/SDL_shaders_gles2.c.obj	a50517bc63077630
+1461	1711	7984935353929919	CMakeFiles/SDL2.dir/src/render/opengles2/SDL_render_gles2.c.obj	c59deddd79a06de5
+1482	1715	7984935354136140	CMakeFiles/SDL2.dir/src/render/software/SDL_blendfillrect.c.obj	acfb0a9a46659074
+1595	1771	7984935355268158	CMakeFiles/SDL2.dir/src/render/software/SDL_drawline.c.obj	e1ca0a8c27aa79dd
+1590	1776	7984935355213046	CMakeFiles/SDL2.dir/src/render/software/SDL_blendpoint.c.obj	4906f4eff787cde5
+1598	1781	7984935355298162	CMakeFiles/SDL2.dir/src/render/software/SDL_drawpoint.c.obj	5023df27354cb4d
+1512	1784	7984935354438153	CMakeFiles/SDL2.dir/src/render/software/SDL_blendline.c.obj	999edf8def21f475
+1453	1787	7984935353849102	CMakeFiles/SDL2.dir/src/render/opengl/SDL_shaders_gl.c.obj	41bea9eb053457b6
+1631	1847	7984935355623554	CMakeFiles/SDL2.dir/src/render/software/SDL_triangle.c.obj	1cdda90717a3eafb
+1340	1851	7984935352712791	CMakeFiles/SDL2.dir/src/render/direct3d/SDL_shaders_d3d.c.obj	5b92d709563760b6
+1624	1855	7984935355553499	CMakeFiles/SDL2.dir/src/render/software/SDL_render_sw.c.obj	391ec00d875103b8
+1450	1859	7984935353809102	CMakeFiles/SDL2.dir/src/render/opengl/SDL_render_gl.c.obj	3b7276d301a22c3a
+1346	1864	7984935352777891	CMakeFiles/SDL2.dir/src/render/direct3d11/SDL_shaders_d3d11.c.obj	43bc9d63f8f36adf
+1716	1890	7984935356470249	CMakeFiles/SDL2.dir/src/render/vitagxm/SDL_render_vita_gxm_memory.c.obj	12c7f573f3d186ba
+1711	1898	7984935356415152	CMakeFiles/SDL2.dir/src/render/vitagxm/SDL_render_vita_gxm.c.obj	c4a62927a63f2015
+1337	1908	7984935352682801	CMakeFiles/SDL2.dir/src/render/direct3d/SDL_render_d3d.c.obj	860067bc21621815
+1771	1947	7984935357021294	CMakeFiles/SDL2.dir/src/render/vitagxm/SDL_render_vita_gxm_tools.c.obj	648804b8ed9b2f85
+1446	1952	7984935353769057	CMakeFiles/SDL2.dir/src/render/direct3d12/SDL_shaders_d3d12.c.obj	9b1c347ae291e009
+1350	1956	7984935352807910	CMakeFiles/SDL2.dir/src/render/direct3d12/SDL_render_d3d12.c.obj	2f34272455c6d32
+1343	1959	7984935352747819	CMakeFiles/SDL2.dir/src/render/direct3d11/SDL_render_d3d11.c.obj	3a81b91580c68849
+1781	2034	7984935357116445	CMakeFiles/SDL2.dir/src/stdlib/SDL_crc16.c.obj	6c7e8a020c35aa12
+1784	2039	7984935357151500	CMakeFiles/SDL2.dir/src/stdlib/SDL_crc32.c.obj	16d6638084a69de0
+1776	2043	7984935357076439	CMakeFiles/SDL2.dir/src/sensor/SDL_sensor.c.obj	bdeb3b148c152d58
+1628	2048	7984935355593544	CMakeFiles/SDL2.dir/src/render/software/SDL_rotate.c.obj	1b1ff3c997d36d22
+1855	2053	7984935357867667	CMakeFiles/SDL2.dir/src/stdlib/SDL_mslibc.c.obj	97762277d8aa2d02
+1859	2058	7984935357897677	CMakeFiles/SDL2.dir/src/stdlib/SDL_qsort.c.obj	c8173bc50ff3be1d
+1851	2062	7984935357822590	CMakeFiles/SDL2.dir/src/stdlib/SDL_malloc.c.obj	d748b3f24f5ace2
+1847	2067	7984935357792579	CMakeFiles/SDL2.dir/src/stdlib/SDL_iconv.c.obj	e37be96dce6f46fa
+1864	2072	7984935357962788	CMakeFiles/SDL2.dir/src/stdlib/SDL_stdlib.c.obj	f5160e933c08193c
+1890	2077	7984935358208765	CMakeFiles/SDL2.dir/src/stdlib/SDL_string.c.obj	44866a1cd3912237
+1898	2146	7984935358293945	CMakeFiles/SDL2.dir/src/stdlib/SDL_strtokr.c.obj	632f2a3547063e0a
+1787	2151	7984935357181522	CMakeFiles/SDL2.dir/src/stdlib/SDL_getenv.c.obj	254e4cf6feb78946
+1952	2187	7984935358839740	CMakeFiles/SDL2.dir/src/video/SDL_RLEaccel.c.obj	a014dde19e53f250
+1959	2203	7984935358910660	CMakeFiles/SDL2.dir/src/video/SDL_blit_0.c.obj	ea3aa11c55a687ac
+2035	2220	7984935359658409	CMakeFiles/SDL2.dir/src/video/SDL_blit_1.c.obj	6da0da99d121220e
+2043	2224	7984935359738440	CMakeFiles/SDL2.dir/src/video/SDL_blit_N.c.obj	253c124b754e8b57
+2048	2228	7984935359793614	CMakeFiles/SDL2.dir/src/video/SDL_blit_auto.c.obj	dee125738866379e
+1956	2231	7984935358870672	CMakeFiles/SDL2.dir/src/video/SDL_blit.c.obj	456cbea956b7b6a3
+2058	2264	7984935359888757	CMakeFiles/SDL2.dir/src/video/SDL_blit_slow.c.obj	d4c215249d84aa0
+2053	2270	7984935359848704	CMakeFiles/SDL2.dir/src/video/SDL_blit_copy.c.obj	8541b1797011c56f
+2062	2275	7984935359938759	CMakeFiles/SDL2.dir/src/video/SDL_bmp.c.obj	99d8fc422b05ba47
+1908	2279	7984935358389106	CMakeFiles/SDL2.dir/src/thread/SDL_thread.c.obj	4a6df4e776f7190
+2067	2282	7984935359989057	CMakeFiles/SDL2.dir/src/video/SDL_clipboard.c.obj	59811954f71f3f7a
+2077	2292	7984935360084148	CMakeFiles/SDL2.dir/src/video/SDL_fillrect.c.obj	e4d12bdf07cf5010
+2039	2295	7984935359708448	CMakeFiles/SDL2.dir/src/video/SDL_blit_A.c.obj	aeb783fb20430b9c
+1947	2363	7984935358779719	CMakeFiles/SDL2.dir/src/timer/SDL_timer.c.obj	25c91e1ae6803420
+2147	2368	7984935360775698	CMakeFiles/SDL2.dir/src/video/SDL_pixels.c.obj	15e6efcbebc66a1f
+2151	2372	7984935360825709	CMakeFiles/SDL2.dir/src/video/SDL_rect.c.obj	bbbfcd7ac858c663
+2265	2401	7984935361957692	CMakeFiles/SDL2.dir/src/video/yuv2rgb/yuv_rgb_lsx.c.obj	f5b85d12cf906830
+2228	2422	7984935361587091	CMakeFiles/SDL2.dir/src/video/SDL_vulkan_utils.c.obj	922ec70138c0ba49
+2231	2434	7984935361627097	CMakeFiles/SDL2.dir/src/video/SDL_yuv.c.obj	5f931507b31c6bab
+2203	2439	7984935361346718	CMakeFiles/SDL2.dir/src/video/SDL_stretch.c.obj	5ae4baf3b1253fe2
+2275	2443	7984935362068347	CMakeFiles/SDL2.dir/src/video/yuv2rgb/yuv_rgb_std.c.obj	79404dc70bf0628a
+2279	2447	7984935362098353	CMakeFiles/SDL2.dir/src/audio/dummy/SDL_dummyaudio.c.obj	bc03e3f2b9045366
+2187	2453	7984935361186476	CMakeFiles/SDL2.dir/src/video/SDL_shape.c.obj	82c4e7b58c53e527
+2270	2457	7984935362012845	CMakeFiles/SDL2.dir/src/video/yuv2rgb/yuv_rgb_sse.c.obj	2232c294adecec8d
+2220	2462	7984935361511985	CMakeFiles/SDL2.dir/src/video/SDL_surface.c.obj	565781cc904784b1
+2072	2514	7984935360039057	CMakeFiles/SDL2.dir/src/video/SDL_egl.c.obj	d20c5509cd35d3ac
+2282	2519	7984935362140326	CMakeFiles/SDL2.dir/src/audio/disk/SDL_diskaudio.c.obj	a9db183cb1ed7ba9
+2295	2524	7984935362270433	CMakeFiles/SDL2.dir/src/video/dummy/SDL_nullevents.c.obj	b969ce8441fb1b52
+2292	2527	7984935362235264	CMakeFiles/SDL2.dir/src/joystick/virtual/SDL_virtualjoystick.c.obj	a519e7ad0a89bcb7
+2363	2590	7984935362946504	CMakeFiles/SDL2.dir/src/video/dummy/SDL_nullframebuffer.c.obj	c70b5ffde9a564fc
+2372	2596	7984935363031671	CMakeFiles/SDL2.dir/src/video/offscreen/SDL_offscreenevents.c.obj	7aa5659def76ffa1
+2401	2599	7984935363332192	CMakeFiles/SDL2.dir/src/video/offscreen/SDL_offscreenframebuffer.c.obj	57abbd23a1466558
+2368	2602	7984935363001658	CMakeFiles/SDL2.dir/src/video/dummy/SDL_nullvideo.c.obj	84c954ed0eb4a4de
+2422	2727	7984935363532566	CMakeFiles/SDL2.dir/src/video/offscreen/SDL_offscreenopengles.c.obj	f3a0087d45fc192a
+2224	2732	7984935361557079	CMakeFiles/SDL2.dir/src/video/SDL_video.c.obj	a92525befafb0b31
+2434	2737	7984935363652793	CMakeFiles/SDL2.dir/src/video/offscreen/SDL_offscreenvideo.c.obj	c58a421a88602046
+2443	2741	7984935363732895	CMakeFiles/SDL2.dir/src/core/windows/SDL_hid.c.obj	de2ec5e94b2bce4
+2439	2746	7984935363702895	CMakeFiles/SDL2.dir/src/video/offscreen/SDL_offscreenwindow.c.obj	470f224ab19ebd6c
+2462	2749	7984935363939693	CMakeFiles/SDL2.dir/src/misc/windows/SDL_sysurl.c.obj	345c0da47830e23b
+2457	2754	7984935363889676	CMakeFiles/SDL2.dir/src/core/windows/SDL_xinput.c.obj	b07ac8a67a77e880
+2514	2864	7984935364460771	CMakeFiles/SDL2.dir/src/audio/winmm/SDL_winmm.c.obj	40f415c03e335a59
+2453	2868	7984935363848115	CMakeFiles/SDL2.dir/src/core/windows/SDL_windows.c.obj	b133ff6528d2bd75
+2447	2871	7984935363788070	CMakeFiles/SDL2.dir/src/core/windows/SDL_immdevice.c.obj	56569c98239ce43a
+2519	2944	7984935364510821	CMakeFiles/SDL2.dir/src/audio/directsound/SDL_directsound.c.obj	d7c92a690dc6a8e
+2524	2948	7984935364555969	CMakeFiles/SDL2.dir/src/audio/wasapi/SDL_wasapi.c.obj	985c93f3bdf77a65
+2527	2990	7984935364585956	CMakeFiles/SDL2.dir/src/audio/wasapi/SDL_wasapi_win32.c.obj	8cbcc49dd2771f6b
+2864	3029	7984935367947885	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsvulkan.c.obj	43e4adabe3313f22
+2591	3034	7984935365217070	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsclipboard.c.obj	1d16884b754c1d36
+2599	3039	7984935365307875	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsframebuffer.c.obj	80a2e12ad272ee1
+2872	3043	7984935368032991	CMakeFiles/SDL2.dir/src/thread/generic/SDL_syscond.c.obj	c765fc81707f3ae
+2603	3101	7984935365337870	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowskeyboard.c.obj	e20e313f8b11564b
+2596	3113	7984935365277869	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsevents.c.obj	8b60490ad34aae79
+2727	3118	7984935366587533	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsmessagebox.c.obj	fac9e66796f0adeb
+2733	3121	7984935366637526	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsmodes.c.obj	20ad8482139a0b5b
+2746	3177	7984935366770548	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsopengles.c.obj	864de83224654fd8
+2737	3181	7984935366685417	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsmouse.c.obj	87c05531b6b5d84b
+2749	3185	7984935366810500	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsshape.c.obj	26ea0fbd774e38c0
+2741	3189	7984935366725414	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsopengl.c.obj	e2fee24732750c72
+2754	3263	7984935366850493	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowsvideo.c.obj	aef0a3fa864a4fdf
+2944	3267	7984935368749241	CMakeFiles/SDL2.dir/src/thread/windows/SDL_syscond_cv.c.obj	f6f2763f547ca458
+2948	3270	7984935368789315	CMakeFiles/SDL2.dir/src/thread/windows/SDL_sysmutex.c.obj	8a35ccc748c71d6d
+2991	3273	7984935369220129	CMakeFiles/SDL2.dir/src/thread/windows/SDL_syssem.c.obj	9167f4ea72d9fa58
+3030	3341	7984935369610742	CMakeFiles/SDL2.dir/src/thread/windows/SDL_systhread.c.obj	e939272806d2d493
+3035	3345	7984935369655869	CMakeFiles/SDL2.dir/src/thread/windows/SDL_systls.c.obj	ac2633f4bc04e334
+2868	3349	7984935367992983	CMakeFiles/SDL2.dir/src/video/windows/SDL_windowswindow.c.obj	73f50e49bc234df2
+3177	3353	7984935371082103	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_combined.c.obj	c65bb5a8c5ec422
+3044	3356	7984935369746033	CMakeFiles/SDL2.dir/src/power/windows/SDL_syspower.c.obj	514322558d55db38
+3101	3413	7984935370322217	CMakeFiles/SDL2.dir/src/locale/windows/SDL_syslocale.c.obj	6888e15b1494d014
+3189	3419	7984935371197717	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_ps3.c.obj	200463d104fcccb0
+3181	3422	7984935371127167	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_gamecube.c.obj	14844a223c17eb80
+3185	3426	7984935371157717	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_luna.c.obj	70f76a2ba21cd279
+3121	3429	7984935370520317	CMakeFiles/SDL2.dir/src/loadso/windows/SDL_sysloadso.c.obj	c0d55f8999b4524
+3263	3492	7984935371948951	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_ps4.c.obj	fa817c2d249814f0
+3039	3496	7984935369700972	CMakeFiles/SDL2.dir/src/sensor/windows/SDL_windowssensor.c.obj	67527e3b31890cb1
+3118	3499	7984935370490311	CMakeFiles/SDL2.dir/src/timer/windows/SDL_systimer.c.obj	5a6479a2f4ffcffb
+3273	3503	7984935372049122	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_shield.c.obj	cb3c42d2009e1fce
+3267	3506	7984935371984032	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_ps5.c.obj	bbb8b716f972dab8
+3349	3580	7984935372810381	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_steamdeck.c.obj	60eeacc052bb5768
+3419	3583	7984935373501470	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_xbox360w.c.obj	c3b65861ffd0f6bd
+3353	3587	7984935372840355	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_switch.c.obj	c773db6e5b969ca3
+3356	3596	7984935372875432	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_wii.c.obj	3307b53e6d66dd5a
+3342	3602	7984935372725271	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_stadia.c.obj	bc4202e5fb7326b7
+3346	3602	7984935372770381	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_steam.c.obj	c00cb6f3390d76b5
+3413	3641	7984935373446346	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_xbox360.c.obj	e943155374acd727
+3270	3642	7984935372014082	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_rumble.c.obj	984e6afba29c229d
+3423	3642	7984935373531472	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_xboxone.c.obj	a24310ab3a960297
+3113	3647	7984935370447332	CMakeFiles/SDL2.dir/src/filesystem/windows/SDL_sysfilesystem.c.obj	db8b950d2a4dbc30
+3596	3674	7984935375269251	SDL2maind.lib	9f1785c8a318be13
+3587	3723	7984935375176852	CMakeFiles/SDL2.dir/src/main/windows/version.rc.res	93c02af8d12d4316
+3426	3724	7984935373566586	CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapijoystick.c.obj	11dfad17942e8b96
+3429	3797	7984935373606564	CMakeFiles/SDL2.dir/src/joystick/windows/SDL_dinputjoystick.c.obj	a1715249d6fa87d
+3503	3820	7984935374334644	CMakeFiles/SDL2.dir/src/joystick/windows/SDL_xinputjoystick.c.obj	6aa9ff2836317553
+3500	3829	7984935374304686	CMakeFiles/SDL2.dir/src/joystick/windows/SDL_windowsjoystick.c.obj	ba500202ef010c56
+3506	3840	7984935374369762	CMakeFiles/SDL2.dir/src/haptic/windows/SDL_dinputhaptic.c.obj	c5c9162111d50cc7
+3580	3841	7984935375110970	CMakeFiles/SDL2.dir/src/haptic/windows/SDL_windowshaptic.c.obj	e7d3a85e7e2ef27a
+3584	3846	7984935375146056	CMakeFiles/SDL2.dir/src/haptic/windows/SDL_xinputhaptic.c.obj	531f4468126ce5fe
+3492	4148	7984935374229515	CMakeFiles/SDL2.dir/src/joystick/windows/SDL_rawinputjoystick.c.obj	54212a579f2f479
+3496	4155	7984935374274654	CMakeFiles/SDL2.dir/src/joystick/windows/SDL_windows_gaming_input.c.obj	20dbdbe15d86ef18
+4155	4683	7984935385899886	SDL2d.dll	9cb8daaaa5d55eb7
+4155	4683	7984935385899886	SDL2d.lib	9cb8daaaa5d55eb7
+4683	4872	7984935386148007	CMakeFiles/install.util	5778fda4e53b4593

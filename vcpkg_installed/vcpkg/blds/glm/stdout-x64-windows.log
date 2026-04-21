@@ -1,0 +1,11 @@
+-- Note: glm only supports static library linkage. Building static library.
+Downloading https://github.com/g-truc/glm/archive/1.0.3.tar.gz -> g-truc-glm-1.0.3.tar.gz
+Successfully downloaded g-truc-glm-1.0.3.tar.gz
+-- Extracting source C:/Users/Ondra/AppData/Local/vcpkg/downloads/g-truc-glm-1.0.3.tar.gz
+-- Using source at C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/glm/src/1.0.3-65552ff9f1.clean
+-- Configuring x64-windows
+-- Building x64-windows-dbg
+-- Building x64-windows-rel
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glm_x64-windows/share/glm/copyright
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glm_x64-windows/share/glm/usage
+-- Provádí se ověření po sestavení.

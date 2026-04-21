@@ -1,0 +1,8 @@
+# ninja log v7
+2	348	7984934976556172	include/glad/glad.h	4e30d63b94aa0059
+2	348	7984934976556172	src/glad.c	4e30d63b94aa0059
+2	348	7984934976556172	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/glad/x64-windows-rel/include/glad/glad.h	4e30d63b94aa0059
+2	348	7984934976556172	C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/glad/x64-windows-rel/src/glad.c	4e30d63b94aa0059
+354	538	7984934977411371	CMakeFiles/glad.dir/src/glad.c.obj	bb93af38346c5df4
+539	575	7984934979261136	glad.lib	993e754c0deabf33
+575	631	7984934979619242	CMakeFiles/install.util	bc08956f420cfbb1

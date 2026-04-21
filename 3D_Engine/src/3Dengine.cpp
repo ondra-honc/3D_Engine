@@ -1,6 +1,9 @@
 ﻿#include "3D engine.h"
-#include <SDL2/SDL.h>
 #include <glad/glad.h>
+#include <SDL2/SDL.h>
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
 #include <vector>
 #include <cmath>
 #include <math.h>
@@ -198,7 +201,7 @@ public:
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     if (!window) {
       std::cout << "Window couldn't be created" << SDL_GetError() << "\n";
@@ -329,14 +332,34 @@ public:
   Vec3 getUp() const { return up; };
 };
 
+enum ShapeType {
+  cube,
+  sphere,
+  rectangle,
+};
 
+class Object {
+  public:
+    ShapeType shape;
+    Vec3 position;
+    Vec3 rotation;
+    Vec3 scale;
+};
 
 
 int main(int argc, char* argv[]) {
+  bool running = true;
+  SDL_Event event;
+  InputManager input;
+  Camera camera({ 0,0,3 }, { 0,0,-1 }, { 0,1,0 }, 3.0f);
   Window window;
   if (!window.isValid()) {
     return 1;
   }
+
+  int width = 0, height = 0;
+  SDL_GetWindowSize(SDL_GL_GetCurrentWindow(), &width, &height);
+  glViewport(0, 0, width, height);
 
   const char* vsSrc = R"(
   #version 330 core
@@ -359,9 +382,29 @@ int main(int argc, char* argv[]) {
   GLint uMVPLoc = glGetUniformLocation(program, "uMVP");
 
   float verts[] = {
-    -0.5f, -0.5f, -2.0f,
-     0.5f, -0.5f, -2.0f,
-     0.0f,  0.5f, -2.0f
+    // back face
+    -0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f,  0.5f,-0.5f,-0.5f,
+     0.5f, 0.5f,-0.5f, -0.5f,-0.5f,-0.5f, -0.5f, 0.5f,-0.5f,
+
+     // front face
+     -0.5f,-0.5f, 0.5f,  0.5f,-0.5f, 0.5f,  0.5f, 0.5f, 0.5f,
+      0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f,-0.5f, 0.5f,
+
+      // left face
+      -0.5f, 0.5f, 0.5f, -0.5f, 0.5f,-0.5f, -0.5f,-0.5f,-0.5f,
+      -0.5f,-0.5f,-0.5f, -0.5f,-0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
+
+      // right face
+       0.5f, 0.5f, 0.5f,  0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f,
+       0.5f,-0.5f,-0.5f,  0.5f, 0.5f, 0.5f,  0.5f,-0.5f, 0.5f,
+
+       // bottom face
+       -0.5f,-0.5f,-0.5f,  0.5f,-0.5f,-0.5f,  0.5f,-0.5f, 0.5f,
+        0.5f,-0.5f, 0.5f, -0.5f,-0.5f, 0.5f, -0.5f,-0.5f,-0.5f,
+
+        // top face
+        -0.5f, 0.5f,-0.5f,  0.5f, 0.5f, 0.5f,  0.5f, 0.5f,-0.5f,
+         0.5f, 0.5f, 0.5f, -0.5f, 0.5f,-0.5f, -0.5f, 0.5f, 0.5f
   };
 
   GLuint vao, vbo;
@@ -381,10 +424,6 @@ int main(int argc, char* argv[]) {
 
   SDL_SetRelativeMouseMode(SDL_TRUE);
 
-  bool running = true;
-  SDL_Event event;
-  InputManager input;
-  Camera camera({ 0,0,0 }, { 0,0,-1 }, { 0,1,0 }, 3.0f);
   float lastTick = SDL_GetTicks();
 
   while (running) {
@@ -393,6 +432,13 @@ int main(int argc, char* argv[]) {
         running = false;
       }
       
+      if (event.type == SDL_WINDOWEVENT &&
+        event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        width = event.window.data1;
+        height = event.window.data2;
+        glViewport(0, 0, width, height);
+      }
+
       input.handleEvent(event);
     }
 
@@ -403,7 +449,12 @@ int main(int argc, char* argv[]) {
     camera.cameraUpdate(input, dt);
     input.resetMouse();
 
-    mat4 projection = mat4::perspective(90, 800.0f / 600.0f, 0.1f, 100.0f);
+    mat4 projection = mat4::perspective(
+      90.0f,
+      (float)width / (float)height,
+      0.1f,
+      100.0f
+    );
     mat4 view = mat4::lookAt(camera.getPosition(), camera.getPosition() + camera.getForward(), camera.getUp());
     mat4 mvp = mat4::multiplyMat4Mat4(projection, view);
 
@@ -414,7 +465,7 @@ int main(int argc, char* argv[]) {
     glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvp.m);
 
     glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     SDL_GL_SwapWindow(SDL_GL_GetCurrentWindow());
   }

@@ -16,9 +16,28 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-# Source file
-add_executable(My3DEngine "C:/Users/Ondra/Desktop/3D engine/3D_Engine/src/3Dengine.cpp")
+# Source files
+add_executable(My3DEngine
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/src/3Dengine.cpp"
+
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/external/imgui.cpp"
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/external/imgui_draw.cpp"
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/external/imgui_tables.cpp"
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/external/imgui_widgets.cpp"
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/external/imgui_impl_sdl2.cpp"
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/external/imgui_impl_opengl3.cpp"
+)
+
+target_link_libraries(My3DEngine PRIVATE
+  SDL2::SDL2
+  SDL2::SDL2main
+  glad::glad
+  glm::glm
+)
+
+target_include_directories(My3DEngine PRIVATE
+  "C:/Users/Ondra/Desktop/3D engine/3D_Engine/include"
+)
 
 # Link everything together
-target_link_libraries(My3DEngine PRIVATE SDL2::SDL2 SDL2::SDL2main glad::glad)
-target_include_directories(My3DEngine PRIVATE ${GLM_INCLUDE_DIRS})
+target_link_libraries(My3DEngine PRIVATE SDL2::SDL2 SDL2::SDL2main glad::glad glm::glm)

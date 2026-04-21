@@ -1,0 +1,6 @@
+Downloading https://github.com/KhronosGroup/OpenGL-Registry/archive/0b449b97cdf1043eef5e1f0e235cbbab6ec10c86.tar.gz -> KhronosGroup-OpenGL-Registry-0b449b97cdf1043eef5e1f0e235cbbab6ec10c86.tar.gz
+Successfully downloaded KhronosGroup-OpenGL-Registry-0b449b97cdf1043eef5e1f0e235cbbab6ec10c86.tar.gz
+-- Extracting source C:/Users/Ondra/AppData/Local/vcpkg/downloads/KhronosGroup-OpenGL-Registry-0b449b97cdf1043eef5e1f0e235cbbab6ec10c86.tar.gz
+-- Using source at C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/opengl-registry/src/ab6ec10c86-88344330ab.clean
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/opengl-registry_x64-windows/share/opengl-registry/copyright
+-- Provádí se ověření po sestavení.

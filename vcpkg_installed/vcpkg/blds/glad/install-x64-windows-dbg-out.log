@@ -1,0 +1,21 @@
+Change Dir: 'C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/glad/x64-windows-dbg'
+
+Run Build Command(s): C:\Users\Ondra\AppData\Local\vcpkg\downloads\tools\ninja-1.13.2-windows\ninja.exe -v -v -j17 install
+[1/4] C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\Ondra\Desktop\3D engine\vcpkg_installed\vcpkg\blds\glad\src\708967e402-274d415499.clean" && C:\Users\Ondra\AppData\Local\vcpkg\downloads\tools\python\python-3.14.2-x64-1\python.exe -m glad --profile=compatibility "--out-path=C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/blds/glad/x64-windows-dbg" --api= --generator=c-debug --extensions= --spec=gl --reproducible"
+[04/21/2026 18:51:36][INFO	][glad   	]: reproducible build, using packaged specification: 'gl.xml'
+[04/21/2026 18:51:36][INFO	][glad.files	]: opening 'gl.xml' from packaged path
+[04/21/2026 18:51:36][INFO	][glad   	]: generating 'gl' bindings: {'gl': None}
+[04/21/2026 18:51:36][INFO	][glad.files	]: opening 'khrplatform.h' from packaged path
+[04/21/2026 18:51:36][INFO	][glad   	]: generating 'gl' bindings - done
+[2/4] C:\PROGRA~1\MICROS~1\18\COMMUN~1\VC\Tools\MSVC\1450~1.357\bin\Hostx64\x64\cl.exe    -I"C:\Users\Ondra\Desktop\3D engine\vcpkg_installed\vcpkg\blds\glad\x64-windows-dbg\include" /nologo /DWIN32 /D_WINDOWS /utf-8 /MP  /MDd /Z7 /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\glad.dir\src\glad.c.obj /FdCMakeFiles\glad.dir\glad.pdb /FS -c "C:\Users\Ondra\Desktop\3D engine\vcpkg_installed\vcpkg\blds\glad\x64-windows-dbg\src\glad.c"
+[3/4] C:\WINDOWS\system32\cmd.exe /C "cd . && C:\PROGRA~1\MICROS~1\18\COMMUN~1\VC\Tools\MSVC\1450~1.357\bin\Hostx64\x64\lib.exe  /machine:x64 /nologo /out:glad.lib CMakeFiles\glad.dir\src\glad.c.obj && cd ."
+[3/4] C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\Ondra\Desktop\3D engine\vcpkg_installed\vcpkg\blds\glad\x64-windows-dbg" && "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -P cmake_install.cmake"
+-- Install configuration: "Debug"
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/glad.lib
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/include/glad/glad.h
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/include/KHR/khrplatform.h
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladConfig.cmake
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladConfigVersion.cmake
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladTargets.cmake
+-- Installing: C:/Users/Ondra/Desktop/3D engine/vcpkg_installed/vcpkg/pkgs/glad_x64-windows/debug/lib/cmake/glad/gladTargets-debug.cmake
+
