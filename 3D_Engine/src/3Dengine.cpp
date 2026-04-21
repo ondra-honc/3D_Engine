@@ -182,6 +182,14 @@ struct mat4 {
 
     return r;
   }
+
+  static mat4 translate(const Vec3& t) {
+    mat4 r; 
+    r.m[12] = t.x;
+    r.m[13] = t.y;
+    r.m[14] = t.z;
+    return r;
+  }
 };
 
 class Window {
@@ -346,6 +354,9 @@ class Object {
     Vec3 scale;
 };
 
+std::vector<Object> objects;
+
+bool editorMode = true;
 
 int main(int argc, char* argv[]) {
   bool running = true;
@@ -353,10 +364,19 @@ int main(int argc, char* argv[]) {
   InputManager input;
   Camera camera({ 0,0,3 }, { 0,0,-1 }, { 0,1,0 }, 3.0f);
   Window window;
+  
   if (!window.isValid()) {
     return 1;
   }
 
+  SDL_SetRelativeMouseMode(editorMode ? SDL_FALSE : SDL_TRUE);
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGui::StyleColorsDark();
+
+  ImGui_ImplSDL2_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
+  ImGui_ImplOpenGL3_Init("#version 330");
+  
   int width = 0, height = 0;
   SDL_GetWindowSize(SDL_GL_GetCurrentWindow(), &width, &height);
   glViewport(0, 0, width, height);
@@ -422,8 +442,6 @@ int main(int argc, char* argv[]) {
 
   glEnable(GL_DEPTH_TEST);
 
-  SDL_SetRelativeMouseMode(SDL_TRUE);
-
   float lastTick = SDL_GetTicks();
 
   while (running) {
@@ -439,16 +457,64 @@ int main(int argc, char* argv[]) {
         glViewport(0, 0, width, height);
       }
 
-      input.handleEvent(event);
+      if (event.type == SDL_KEYDOWN && event.key.repeat == 0 && event.key.keysym.sym == SDLK_TAB) {
+        editorMode = !editorMode;
+        SDL_SetRelativeMouseMode(editorMode ? SDL_FALSE : SDL_TRUE);
+      }
+      
+      ImGui_ImplSDL2_ProcessEvent(&event);
+      
+      if (!editorMode) {
+        input.handleEvent(event);
+      }
     }
 
     float current = SDL_GetTicks();
     float dt = (current - lastTick) / 1000.0f;
     lastTick = current;
 
-    camera.cameraUpdate(input, dt);
-    input.resetMouse();
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
+    ImGui::NewFrame();
 
+    ImGuiIO& io = ImGui::GetIO();
+
+    const float panelW = 360.0f;
+    const float panelH = 260.0f;
+    const float pad = 12.0f;
+
+    ImGui::SetNextWindowPos(ImVec2(pad, pad), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(panelW, panelH), ImGuiCond_Always);
+
+    ImGuiWindowFlags flags =
+      ImGuiWindowFlags_NoResize |
+      ImGuiWindowFlags_NoMove |
+      ImGuiWindowFlags_NoCollapse;
+
+    ImGui::Begin("Editor", nullptr, flags);
+    
+    ImGui::Text("TAB = toggle Editor/Camera");
+    ImGui::Text("Mode: %s", editorMode ? "Editor (mouse free)" : "Camera (mouse locked)");
+
+    if (ImGui::Button("Add Cube")) {
+      Object obj;
+      obj.shape = cube;
+      obj.position = { (float)objects.size() * 1.5f, 0.0f, 0.0f };
+      obj.rotation = { 0,0,0 };
+      obj.scale = { 1,1,1 };
+      objects.push_back(obj);
+    }
+
+    ImGui::Text("Objects: %d", (int)objects.size());
+    ImGui::Text("FPS: %.1f", (dt > 0.0f) ? (1.0f / dt) : 0.0f);
+    ImGui::Text("Position: %.2f %.2f %.2f", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+    ImGui::End();
+    
+    if (!editorMode) {
+      camera.cameraUpdate(input, dt);
+    }
+    input.resetMouse();
+ 
     mat4 projection = mat4::perspective(
       90.0f,
       (float)width / (float)height,
@@ -462,13 +528,26 @@ int main(int argc, char* argv[]) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(program);
-    glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvp.m);
-
     glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
 
+    for (const auto& obj : objects) {
+      if (obj.shape != cube) continue;
+
+      mat4 model = mat4::translate(obj.position);
+      mat4 vp = mat4::multiplyMat4Mat4(projection, view);
+      mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model); 
+
+      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(SDL_GL_GetCurrentWindow());
   }
 
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplSDL2_Shutdown();
+  ImGui::DestroyContext();
   return 0;
 }
