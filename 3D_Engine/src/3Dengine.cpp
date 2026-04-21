@@ -6,7 +6,6 @@
 #include "imgui_impl_opengl3.h"
 #include <vector>
 #include <cmath>
-#include <math.h>
 #include <iostream>
 
 GLuint compileShader(GLenum type, const char* src) {
@@ -190,6 +189,15 @@ struct mat4 {
     r.m[14] = t.z;
     return r;
   }
+
+  static mat4 scale(const Vec3& v) {
+    mat4 r;
+    r.m[0] = v.x;
+    r.m[5] = v.y;
+    r.m[10] = v.z;
+    r.m[15] = 1;
+    return r;
+  }
 };
 
 class Window {
@@ -209,6 +217,7 @@ public:
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8); // <-- Add this line
     window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     if (!window) {
@@ -258,6 +267,7 @@ public:
       else if (event.key.keysym.sym == SDLK_d) right = true;
       else if (event.key.keysym.sym == SDLK_SPACE) up = true;
       else if (event.key.keysym.sym == SDLK_LCTRL) down = true;
+      else if (event.key.keysym.sym == SDLK_RCTRL) down = true;
     }
 
     if (event.type == SDL_KEYUP) {
@@ -267,6 +277,7 @@ public:
       else if (event.key.keysym.sym == SDLK_d) right = false;
       else if (event.key.keysym.sym == SDLK_SPACE) up = false;
       else if (event.key.keysym.sym == SDLK_LCTRL) down = false;
+      else if (event.key.keysym.sym == SDLK_RCTRL) down = false;
     }
 
     if (event.type == SDL_MOUSEMOTION) {
@@ -328,8 +339,8 @@ public:
     if (pitch > 89.0f) pitch = 89.0f;
     if (pitch < -89.0f) pitch = -89.0f;
 
-    float yawRad = yaw * (3.14159265f / 180.0f);
-    float pitchRad = pitch * (3.14159265f / 180.0f);
+    float yawRad = yaw * (M_PI / 180.0f);
+    float pitchRad = pitch * (M_PI / 180.0f);
 
     forward.x = cosf(yawRad) * cosf(pitchRad);
     forward.y = sinf(pitchRad);
@@ -357,6 +368,7 @@ class Object {
     Vec3 position;
     Vec3 rotation;
     Vec3 scale;
+    Vec3 color;
 };
 
 std::vector<Object> objects;
@@ -367,8 +379,11 @@ int main(int argc, char* argv[]) {
   bool running = true;
   SDL_Event event;
   InputManager input;
-  Camera camera({ 0,0,3 }, { 0,0,-1 }, { 0,1,0 }, 3.0f);
+  Camera camera({ 0,1.5f,3 }, { 0,0,-1 }, { 0,1,0 }, 3.0f);
   Window window;
+  Vec3 floorPos = { 0,-0.1,0 };
+  Vec3 floorSize = { 20,0.2,20 };
+  Vec3 floorColor = { 0.2f, 0.2f, 0.2f };
   
   if (!window.isValid()) {
     return 1;
@@ -391,45 +406,71 @@ int main(int argc, char* argv[]) {
   layout (location = 0) in vec3 aPos;
   uniform mat4 uMVP;
   void main() {
-    gl_Position = uMVP * vec4(aPos, 1.0);
-  }
-  )";
+      gl_Position = uMVP * vec4(aPos, 1.0);
+})";
 
   const char* fsSrc = R"(
   #version 330 core
   out vec4 FragColor;
+  uniform vec3 uColor;
   void main() {
-    FragColor = vec4(1.0, 0.8, 0.2, 1.0);
+    FragColor = vec4(uColor, 1.0);
   }
   )";
 
   GLuint program = crateProgram(vsSrc, fsSrc);
   GLint uMVPLoc = glGetUniformLocation(program, "uMVP");
-
+  GLint uColorLoc = glGetUniformLocation(program, "uColor");
+  GLint uOffsetLoc = glGetUniformLocation(program, "uOutlineOffset");
+  
   float verts[] = {
-    // back face
-    -0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f,  0.5f,-0.5f,-0.5f,
-     0.5f, 0.5f,-0.5f, -0.5f,-0.5f,-0.5f, -0.5f, 0.5f,-0.5f,
+    // Front face (Z = 0.5)
+    -0.5f, -0.5f,  0.5f,
+     0.5f, -0.5f,  0.5f,
+     0.5f,  0.5f,  0.5f,
+     0.5f,  0.5f,  0.5f,
+    -0.5f,  0.5f,  0.5f,
+    -0.5f, -0.5f,  0.5f,
 
-     // front face
-     -0.5f,-0.5f, 0.5f,  0.5f,-0.5f, 0.5f,  0.5f, 0.5f, 0.5f,
-      0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f,-0.5f, 0.5f,
+    // Back face (Z = -0.5)
+    -0.5f, -0.5f, -0.5f,
+    -0.5f,  0.5f, -0.5f,
+     0.5f,  0.5f, -0.5f,
+     0.5f,  0.5f, -0.5f,
+     0.5f, -0.5f, -0.5f,
+    -0.5f, -0.5f, -0.5f,
 
-      // left face
-      -0.5f, 0.5f, 0.5f, -0.5f, 0.5f,-0.5f, -0.5f,-0.5f,-0.5f,
-      -0.5f,-0.5f,-0.5f, -0.5f,-0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
+    // Left face (X = -0.5)
+    -0.5f, -0.5f, -0.5f,
+    -0.5f, -0.5f,  0.5f,
+    -0.5f,  0.5f,  0.5f,
+    -0.5f,  0.5f,  0.5f,
+    -0.5f,  0.5f, -0.5f,
+    -0.5f, -0.5f, -0.5f,
 
-      // right face
-       0.5f, 0.5f, 0.5f,  0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f,
-       0.5f,-0.5f,-0.5f,  0.5f, 0.5f, 0.5f,  0.5f,-0.5f, 0.5f,
+    // Right face (X = 0.5)
+     0.5f, -0.5f, -0.5f,
+     0.5f,  0.5f, -0.5f,
+     0.5f,  0.5f,  0.5f,
+     0.5f,  0.5f,  0.5f,
+     0.5f, -0.5f,  0.5f,
+     0.5f, -0.5f, -0.5f,
 
-       // bottom face
-       -0.5f,-0.5f,-0.5f,  0.5f,-0.5f,-0.5f,  0.5f,-0.5f, 0.5f,
-        0.5f,-0.5f, 0.5f, -0.5f,-0.5f, 0.5f, -0.5f,-0.5f,-0.5f,
+     // Top face (Y = 0.5)
+     -0.5f,  0.5f, -0.5f,
+     -0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f, -0.5f,
+     -0.5f,  0.5f, -0.5f,
 
-        // top face
-        -0.5f, 0.5f,-0.5f,  0.5f, 0.5f, 0.5f,  0.5f, 0.5f,-0.5f,
-         0.5f, 0.5f, 0.5f, -0.5f, 0.5f,-0.5f, -0.5f, 0.5f, 0.5f
+     // Bottom face (Y = -0.5)
+     -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+     -0.5f, -0.5f,  0.5f,
+     -0.5f, -0.5f, -0.5f
   };
 
   GLuint vao, vbo;
@@ -502,9 +543,10 @@ int main(int argc, char* argv[]) {
     if (ImGui::Button("Add Cube")) {
       Object obj;
       obj.shape = cube;
-      obj.position = { (float)objects.size() * 1.5f, 0.0f, 0.0f };
+      obj.position = { (float)objects.size() * 1.0f, 0.5f, 0.0f };
       obj.rotation = { 0,0,0 };
       obj.scale = { 1,1,1 };
+      obj.color = { 0.9f, 0.7f, 0.2f };
       objects.push_back(obj);
     }
 
@@ -527,22 +569,74 @@ int main(int argc, char* argv[]) {
     mat4 view = mat4::lookAt(camera.getPosition(), camera.getPosition() + camera.getForward(), camera.getUp());
 
     glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glUseProgram(program);
     glBindVertexArray(vao);
 
+    mat4 T = mat4::translate(floorPos);
+    mat4 S = mat4::scale(floorSize);
+
+    mat4 floorModel = mat4::multiplyMat4Mat4(T, S);
+    mat4 vp = mat4::multiplyMat4Mat4(projection, view);
+    mat4 floorMVP = mat4::multiplyMat4Mat4(vp, floorModel);
+
+    glUniform3f(uColorLoc, floorColor.x, floorColor.y, floorColor.z);
+    glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, floorMVP.m);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    
+    // --- PASS 1: Rendering normal cubes ---
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
     for (const auto& obj : objects) {
       if (obj.shape != cube) continue;
 
-      mat4 model = mat4::translate(obj.position);
-      mat4 vp = mat4::multiplyMat4Mat4(projection, view);
-      mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model); 
+      mat4 T = mat4::translate(obj.position);
+      mat4 S = mat4::scale(obj.scale);
+      mat4 model = mat4::multiplyMat4Mat4(T, S);
+      mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
+      glUniform3f(uColorLoc, obj.color.x, obj.color.y, obj.color.z);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
+
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
+    // --- PASS 2: Creating the outline ---
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilMask(0x00);
+    glDisable(GL_DEPTH_TEST);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+
+    for (const auto& obj : objects) {
+      if (obj.shape != cube) continue;
+
+      mat4 T = mat4::translate(obj.position);
+
+      mat4 S = mat4::scale(obj.scale + Vec3{ 0.1f, 0.1f, 0.1f });
+
+      mat4 model = mat4::multiplyMat4Mat4(T, S);
+      mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
+
+      glUniform3f(uColorLoc, 0.0f, 0.0f, 0.0f); // Black
+      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
+
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    // --- CLEANUP ---
+    glDisable(GL_CULL_FACE); 
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_STENCIL_TEST);
+    glStencilMask(0xFF);
+      
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(SDL_GL_GetCurrentWindow());
