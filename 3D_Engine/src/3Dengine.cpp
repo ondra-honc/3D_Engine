@@ -231,12 +231,6 @@ public:
     return window != nullptr && context != nullptr;
   }
 
-  void render() {
-    glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
-    glClear(GL_COLOR_BUFFER_BIT);
-    SDL_GL_SwapWindow(window);
-  }
-
   ~Window() {
     if (context) SDL_GL_DeleteContext(context);
     if (window) SDL_DestroyWindow(window);
@@ -250,6 +244,8 @@ private:
   bool backward = false;
   bool left = false;
   bool right = false;
+  bool up = false;
+  bool down = false;
   int dx = 0;
   int dy = 0;
 
@@ -260,6 +256,8 @@ public:
       else if (event.key.keysym.sym == SDLK_s) backward = true;
       else if (event.key.keysym.sym == SDLK_a) left = true;
       else if (event.key.keysym.sym == SDLK_d) right = true;
+      else if (event.key.keysym.sym == SDLK_SPACE) up = true;
+      else if (event.key.keysym.sym == SDLK_LCTRL) down = true;
     }
 
     if (event.type == SDL_KEYUP) {
@@ -267,6 +265,8 @@ public:
       else if (event.key.keysym.sym == SDLK_s) backward = false;
       else if (event.key.keysym.sym == SDLK_a) left = false;
       else if (event.key.keysym.sym == SDLK_d) right = false;
+      else if (event.key.keysym.sym == SDLK_SPACE) up = false;
+      else if (event.key.keysym.sym == SDLK_LCTRL) down = false;
     }
 
     if (event.type == SDL_MOUSEMOTION) {
@@ -286,6 +286,8 @@ public:
   bool isRight() const { return right; };
   int getDX() const { return dx; };
   int getDY() const { return dy; };
+  bool isUp() const { return up; };
+  bool isDown() const { return down; };
 };
 
 class Camera {
@@ -295,6 +297,7 @@ private:
   Vec3 up;
   Vec3 right;
   float speed;
+  Vec3 worldUp = { 0,1,0 };
 
   float yaw = -90.0f;
   float pitch = 0.0f;
@@ -316,6 +319,8 @@ public:
     if (input.isBackward()) position = position - forward * step;
     if (input.isLeft()) position = position - right * step;
     if (input.isRight()) position = position + right * step;
+    if (input.isUp()) position = position + worldUp * step;
+    if (input.isDown()) position = position - worldUp * step;
 
     yaw += input.getDX() * sensitivity;
     pitch -= input.getDY() * sensitivity;
@@ -477,8 +482,6 @@ int main(int argc, char* argv[]) {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    ImGuiIO& io = ImGui::GetIO();
-
     const float panelW = 360.0f;
     const float panelH = 260.0f;
     const float pad = 12.0f;
@@ -522,7 +525,6 @@ int main(int argc, char* argv[]) {
       100.0f
     );
     mat4 view = mat4::lookAt(camera.getPosition(), camera.getPosition() + camera.getForward(), camera.getUp());
-    mat4 mvp = mat4::multiplyMat4Mat4(projection, view);
 
     glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
