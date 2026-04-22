@@ -217,7 +217,6 @@ public:
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8); // <-- Add this line
     window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     if (!window) {
@@ -372,6 +371,7 @@ class Object {
 };
 
 std::vector<Object> objects;
+int selectedObject = -1;
 
 bool editorMode = true;
 
@@ -407,7 +407,8 @@ int main(int argc, char* argv[]) {
   uniform mat4 uMVP;
   void main() {
       gl_Position = uMVP * vec4(aPos, 1.0);
-})";
+  }
+  )";
 
   const char* fsSrc = R"(
   #version 330 core
@@ -421,56 +422,33 @@ int main(int argc, char* argv[]) {
   GLuint program = crateProgram(vsSrc, fsSrc);
   GLint uMVPLoc = glGetUniformLocation(program, "uMVP");
   GLint uColorLoc = glGetUniformLocation(program, "uColor");
-  GLint uOffsetLoc = glGetUniformLocation(program, "uOutlineOffset");
-  
+  glFrontFace(GL_CCW);
+  glCullFace(GL_BACK);
+
   float verts[] = {
-    // Front face (Z = 0.5)
-    -0.5f, -0.5f,  0.5f,
-     0.5f, -0.5f,  0.5f,
-     0.5f,  0.5f,  0.5f,
-     0.5f,  0.5f,  0.5f,
-    -0.5f,  0.5f,  0.5f,
-    -0.5f, -0.5f,  0.5f,
+    // back face (-Z)
+    -0.5f,-0.5f,-0.5f,   0.5f, 0.5f,-0.5f,   0.5f,-0.5f,-0.5f,
+     0.5f, 0.5f,-0.5f,  -0.5f,-0.5f,-0.5f,  -0.5f, 0.5f,-0.5f,
 
-    // Back face (Z = -0.5)
-    -0.5f, -0.5f, -0.5f,
-    -0.5f,  0.5f, -0.5f,
-     0.5f,  0.5f, -0.5f,
-     0.5f,  0.5f, -0.5f,
-     0.5f, -0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,
+     // front face (+Z)
+     -0.5f,-0.5f, 0.5f,   0.5f,-0.5f, 0.5f,   0.5f, 0.5f, 0.5f,
+      0.5f, 0.5f, 0.5f,  -0.5f, 0.5f, 0.5f,  -0.5f,-0.5f, 0.5f,
 
-    // Left face (X = -0.5)
-    -0.5f, -0.5f, -0.5f,
-    -0.5f, -0.5f,  0.5f,
-    -0.5f,  0.5f,  0.5f,
-    -0.5f,  0.5f,  0.5f,
-    -0.5f,  0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,
+      // left face (-X)
+      -0.5f, 0.5f, 0.5f,  -0.5f, 0.5f,-0.5f,  -0.5f,-0.5f,-0.5f,
+      -0.5f,-0.5f,-0.5f,  -0.5f,-0.5f, 0.5f,  -0.5f, 0.5f, 0.5f,
 
-    // Right face (X = 0.5)
-     0.5f, -0.5f, -0.5f,
-     0.5f,  0.5f, -0.5f,
-     0.5f,  0.5f,  0.5f,
-     0.5f,  0.5f,  0.5f,
-     0.5f, -0.5f,  0.5f,
-     0.5f, -0.5f, -0.5f,
+      // right face (+X)
+       0.5f, 0.5f, 0.5f,   0.5f,-0.5f,-0.5f,   0.5f, 0.5f,-0.5f,
+       0.5f,-0.5f,-0.5f,   0.5f, 0.5f, 0.5f,   0.5f,-0.5f, 0.5f,
 
-     // Top face (Y = 0.5)
-     -0.5f,  0.5f, -0.5f,
-     -0.5f,  0.5f,  0.5f,
-      0.5f,  0.5f,  0.5f,
-      0.5f,  0.5f,  0.5f,
-      0.5f,  0.5f, -0.5f,
-     -0.5f,  0.5f, -0.5f,
+       // bottom face (-Y)
+       -0.5f,-0.5f,-0.5f,   0.5f,-0.5f,-0.5f,   0.5f,-0.5f, 0.5f,
+        0.5f,-0.5f, 0.5f,  -0.5f,-0.5f, 0.5f,  -0.5f,-0.5f,-0.5f,
 
-     // Bottom face (Y = -0.5)
-     -0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f,  0.5f,
-      0.5f, -0.5f,  0.5f,
-     -0.5f, -0.5f,  0.5f,
-     -0.5f, -0.5f, -0.5f
+        // top face (+Y)
+        -0.5f, 0.5f,-0.5f,   0.5f, 0.5f, 0.5f,   0.5f, 0.5f,-0.5f,
+         0.5f, 0.5f, 0.5f,  -0.5f, 0.5f,-0.5f,  -0.5f, 0.5f, 0.5f
   };
 
   GLuint vao, vbo;
@@ -548,8 +526,21 @@ int main(int argc, char* argv[]) {
       obj.scale = { 1,1,1 };
       obj.color = { 0.9f, 0.7f, 0.2f };
       objects.push_back(obj);
+      if (selectedObject < 0) selectedObject = 0;
     }
 
+    if (!objects.empty()) {
+      ImGui::SliderInt("Selected", &selectedObject, 0, (int)objects.size() - 1);
+
+      ImGui::Separator();
+      ImGui::Text("Transform");
+
+      ImGui::DragFloat3("Position", &objects[selectedObject].position.x, 0.1f);
+      ImGui::DragFloat3("Rotation", &objects[selectedObject].rotation.x, 1.0f);
+      ImGui::DragFloat3("Scale", &objects[selectedObject].scale.x, 0.1f);
+
+      ImGui::ColorEdit3("Color", &objects[selectedObject].color.x);
+    }
     ImGui::Text("Objects: %d", (int)objects.size());
     ImGui::Text("FPS: %.1f", (dt > 0.0f) ? (1.0f / dt) : 0.0f);
     ImGui::Text("Position: %.2f %.2f %.2f", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
@@ -569,7 +560,7 @@ int main(int argc, char* argv[]) {
     mat4 view = mat4::lookAt(camera.getPosition(), camera.getPosition() + camera.getForward(), camera.getUp());
 
     glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(program);
     glBindVertexArray(vao);
@@ -585,13 +576,11 @@ int main(int argc, char* argv[]) {
     glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, floorMVP.m);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     
-    // --- PASS 1: Rendering normal cubes ---
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilFunc(GL_ALWAYS, 1, 0xFF);
-    glStencilMask(0xFF);
+    // --- PASS 1: normal cubes ---
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glDepthMask(GL_TRUE);
 
     for (const auto& obj : objects) {
       if (obj.shape != cube) continue;
@@ -603,40 +592,36 @@ int main(int argc, char* argv[]) {
 
       glUniform3f(uColorLoc, obj.color.x, obj.color.y, obj.color.z);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
-
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-    // --- PASS 2: Creating the outline ---
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilMask(0x00);
-    glDisable(GL_DEPTH_TEST);
+    // --- PASS 2: wireframe outline overlay ---
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_FALSE);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+    glDisable(GL_CULL_FACE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(2.0f);
 
     for (const auto& obj : objects) {
       if (obj.shape != cube) continue;
 
       mat4 T = mat4::translate(obj.position);
-
-      mat4 S = mat4::scale(obj.scale + Vec3{ 0.1f, 0.1f, 0.1f });
-
+      mat4 S = mat4::scale(obj.scale);
       mat4 model = mat4::multiplyMat4Mat4(T, S);
       mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
-      glUniform3f(uColorLoc, 0.0f, 0.0f, 0.0f); // Black
+      glUniform3f(uColorLoc, 0.05f, 0.05f, 0.05f);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
-
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-    // --- CLEANUP ---
-    glDisable(GL_CULL_FACE); 
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_STENCIL_TEST);
-    glStencilMask(0xFF);
-      
+    // restore
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(SDL_GL_GetCurrentWindow());
