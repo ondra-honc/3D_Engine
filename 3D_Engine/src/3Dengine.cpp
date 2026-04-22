@@ -365,6 +365,7 @@ enum ShapeType {
 
 class Object {
   public:
+    int id;
     ShapeType shape;
     Vec3 position;
     Vec3 rotation;
@@ -373,9 +374,12 @@ class Object {
 };
 
 std::vector<Object> objects;
+std::vector<int> selectedIDs;
 Object* selectedObject = nullptr;
 
 bool editorMode = true;
+
+int nextID = 0;
 
 bool rayIntersectAABB(Vec3 rayOrigin, Vec3 rayDir, Vec3 boxMin, Vec3 boxMax, float& tOut) {
   Vec3 invDir = { 1.0f / rayDir.x, 1.0f / rayDir.y, 1.0f / rayDir.z };
@@ -523,11 +527,9 @@ int main(int argc, char* argv[]) {
           float fovRad = 90.0f * (M_PI / 180.0f);
           float halfTan = tanf(fovRad / 2.0f);
 
-          // Convert mouse position to Normalized Device Coordinates (-1 to 1)
           float px = (2.0f * mouseX / width - 1.0f) * aspect * halfTan;
           float py = (1.0f - 2.0f * mouseY / height) * halfTan; 
 
-          // Calculate where the ray is pointing
           Vec3 rayDir = camera.getForward() + camera.getRight() * px + camera.getUp() * py;
           rayDir = Vec3::normalize(rayDir);
           Vec3 rayOrigin = camera.getPosition();
@@ -535,7 +537,6 @@ int main(int argc, char* argv[]) {
           float closestDist = INFINITY;
           int hitIndex = -1;
 
-          // Check every object to see which one we hit
           for (int i = 0; i < objects.size(); i++) {
             Vec3 boxMin = objects[i].position - (objects[i].scale * 0.5f);
             Vec3 boxMax = objects[i].position + (objects[i].scale * 0.5f);
@@ -551,9 +552,23 @@ int main(int argc, char* argv[]) {
 
           if (hitIndex != -1) {
             selectedObject = &objects[hitIndex];
+            int hitID = objects[hitIndex].id;
+
+            if (SDL_GetModState() & KMOD_CTRL) {
+              if (std::find(selectedIDs.begin(), selectedIDs.end(), hitID) == selectedIDs.end()) {
+                selectedIDs.push_back(hitID);
+              }
+            }
+            else {
+              selectedIDs.clear();
+              selectedIDs.push_back(hitID);
+            }
           }
           else {
-            selectedObject = nullptr;
+            if (!(SDL_GetModState() & KMOD_CTRL)) {
+              selectedObject = nullptr;
+              selectedIDs.clear();
+            }
           }
         }
       }
@@ -595,12 +610,14 @@ int main(int argc, char* argv[]) {
       }
 
       Object obj;
+      obj.id = nextID;
       obj.shape = cube;
       obj.position = { (float)objects.size() * 1.0f, 0.5f, 0.0f };
       obj.rotation = { 0,0,0 };
       obj.scale = { 1,1,1 };
       obj.color = { 0.9f, 0.7f, 0.2f };
       objects.push_back(obj);
+      nextID++;
 
       if (currentIndex != -1) {
         selectedObject = &objects[currentIndex];
@@ -615,13 +632,70 @@ int main(int argc, char* argv[]) {
         ImGui::Separator();
         ImGui::Text("Transform");
 
-        ImGui::DragFloat3("Position", &selectedObject->position.x, 0.1f);
-        ImGui::DragFloat3("Rotation", &selectedObject->rotation.x, 1.0f);
-        ImGui::DragFloat3("Scale", &selectedObject->scale.x, 0.1f);
+        // --- POSITION ---
+        Vec3 oldPos = selectedObject->position;
+        if (ImGui::DragFloat3("Position", &selectedObject->position.x, 0.1f)) {
+          Vec3 delta = selectedObject->position - oldPos;
+          for (auto& obj : objects) {
+            // Apply delta to all selected objects EXCEPT the one we just dragged
+            bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+            if (isSel && &obj != selectedObject) {
+              obj.position += delta;
+            }
+          }
+        }
 
-        ImGui::ColorEdit3("Color", &selectedObject->color.x);
+        // --- ROTATION ---
+        Vec3 oldRot = selectedObject->rotation;
+        if (ImGui::DragFloat3("Rotation", &selectedObject->rotation.x, 1.0f)) {
+          Vec3 delta = selectedObject->rotation - oldRot;
+          for (auto& obj : objects) {
+            bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+            if (isSel && &obj != selectedObject) {
+              obj.rotation += delta;
+            }
+          }
+        }
+
+        // --- SCALE ---
+        Vec3 oldScale = selectedObject->scale;
+        if (ImGui::DragFloat3("Scale", &selectedObject->scale.x, 0.1f)) {
+          Vec3 delta = selectedObject->scale - oldScale;
+          for (auto& obj : objects) {
+            bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+            if (isSel && &obj != selectedObject) {
+              obj.scale += delta;
+            }
+          }
+        }
+
+        // --- COLOR ---
+        if (ImGui::ColorEdit3("Color", &selectedObject->color.x)) {
+          for (auto& obj : objects) {
+            bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+            if (isSel && &obj != selectedObject) {
+              obj.color = selectedObject->color;
+            }
+          }
+        }
+        
+        if (ImGui::Button("Delete Selected")) {
+          if (!selectedIDs.empty()) {
+            objects.erase(
+              std::remove_if(objects.begin(), objects.end(), [&](const Object& obj) {
+                return std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+                }),
+              objects.end()
+            );
+
+            selectedIDs.clear();
+            selectedObject = nullptr;
+          }
+        }
       }
     }
+
+
     ImGui::Text("Objects: %d", (int)objects.size());
     ImGui::Text("FPS: %.1f", (dt > 0.0f) ? (1.0f / dt) : 0.0f);
     ImGui::Text("Position: %.2f %.2f %.2f", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
@@ -673,7 +747,9 @@ int main(int argc, char* argv[]) {
 
       Vec3 renderColor = obj.color;
 
-      if (&obj == selectedObject) {
+      bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+
+      if (isSel) {
         renderColor.x = std::min(1.0f, renderColor.x + 0.3f);
         renderColor.y = std::min(1.0f, renderColor.y + 0.3f);
         renderColor.z = std::min(1.0f, renderColor.z + 0.3f);
