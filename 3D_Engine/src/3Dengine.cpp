@@ -589,6 +589,11 @@ int main(int argc, char* argv[]) {
     ImGui::Text("Mode: %s", editorMode ? "Editor (mouse free)" : "Camera (mouse locked)");
 
     if (ImGui::Button("Add Cube")) {
+      int currentIndex = -1;
+      if (selectedObject != nullptr) {
+        currentIndex = (int)(selectedObject - &objects[0]);
+      }
+
       Object obj;
       obj.shape = cube;
       obj.position = { (float)objects.size() * 1.0f, 0.5f, 0.0f };
@@ -596,7 +601,13 @@ int main(int argc, char* argv[]) {
       obj.scale = { 1,1,1 };
       obj.color = { 0.9f, 0.7f, 0.2f };
       objects.push_back(obj);
-      if (selectedObject < 0) selectedObject = 0;
+
+      if (currentIndex != -1) {
+        selectedObject = &objects[currentIndex];
+      }
+      else {
+        selectedObject = &objects.back();
+      }
     }
 
     if (!objects.empty()) {
