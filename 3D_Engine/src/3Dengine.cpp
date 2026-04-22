@@ -199,6 +199,44 @@ struct mat4 {
     r.m[15] = 1;
     return r;
   }
+
+  static mat4 rotateX(float angleDeg) {
+    float a = angleDeg * (M_PI / 180.0f);
+    mat4 r;
+    r.m[5] = cosf(a);  
+    r.m[6] = sinf(a);   
+    r.m[9] = -sinf(a);
+    r.m[10] = cosf(a);  
+    return r;
+  }
+
+  static mat4 rotateY(float angleDeg) {
+    float a = angleDeg * (M_PI / 180.0f);
+    mat4 r;
+    r.m[0] = cosf(a); 
+    r.m[2] = -sinf(a);
+    r.m[8] = sinf(a);  
+    r.m[10] = cosf(a);
+    return r;
+  }
+
+  static mat4 rotateZ(float angleDeg) {
+    float a = angleDeg * (M_PI / 180.0f);
+    mat4 r;
+    r.m[0] = cosf(a); 
+    r.m[1] = sinf(a);
+    r.m[4] = -sinf(a); 
+    r.m[5] = cosf(a);
+    return r;
+  }
+};
+
+struct ArrowConfig {
+  static constexpr float shaftLen = 0.8f;  
+  static constexpr float shaftThick = 0.04f;
+  static constexpr float tipSize = 0.12f;
+  static constexpr float tipHeight = 0.25f;
+  static constexpr float halfThick = tipSize / 2.0f;
 };
 
 class Window {
@@ -465,6 +503,17 @@ int main(int argc, char* argv[]) {
   glFrontFace(GL_CCW);
   glCullFace(GL_BACK);
 
+  float pyramidVerts[] = {
+    // Base (Two triangles)
+    -0.5f, 0.0f, -0.5f,  0.5f, 0.0f, -0.5f,  0.5f, 0.0f,  0.5f,
+     0.5f, 0.0f,  0.5f, -0.5f, 0.0f,  0.5f, -0.5f, 0.0f, -0.5f,
+     // Sides
+     -0.5f, 0.0f, -0.5f,  0.5f, 0.0f, -0.5f,  0.0f, 1.0f,  0.0f,
+      0.5f, 0.0f, -0.5f,  0.5f, 0.0f,  0.5f,  0.0f, 1.0f,  0.0f,
+      0.5f, 0.0f,  0.5f, -0.5f, 0.0f,  0.5f,  0.0f, 1.0f,  0.0f,
+     -0.5f, 0.0f,  0.5f, -0.5f, 0.0f, -0.5f,  0.0f, 1.0f,  0.0f
+  };
+  
   float verts[] = {
     // back face (-Z)
     -0.5f,-0.5f,-0.5f,   0.5f, 0.5f,-0.5f,   0.5f,-0.5f,-0.5f,
@@ -490,6 +539,15 @@ int main(int argc, char* argv[]) {
         -0.5f, 0.5f,-0.5f,   0.5f, 0.5f, 0.5f,   0.5f, 0.5f,-0.5f,
          0.5f, 0.5f, 0.5f,  -0.5f, 0.5f,-0.5f,  -0.5f, 0.5f, 0.5f
   };
+
+  GLuint pyramidVao, pyramidVbo;
+  glGenVertexArrays(1, &pyramidVao);
+  glGenBuffers(1, &pyramidVbo);
+  glBindVertexArray(pyramidVao);
+  glBindBuffer(GL_ARRAY_BUFFER, pyramidVbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVerts), pyramidVerts, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
 
   GLuint vao, vbo;
   glGenVertexArrays(1, &vao);
@@ -544,12 +602,28 @@ int main(int argc, char* argv[]) {
           if (selectedObject != nullptr) {
             float t;
             Vec3 pos = selectedObject->position;
-            const float arrowLen = 2.0f;
-            const float thickness = 0.25f;
 
-            if (rayIntersectAABB(rayOrigin, rayDir, pos, pos + Vec3{ arrowLen, thickness, thickness }, t)) activeAxis = X;
-            else if (rayIntersectAABB(rayOrigin, rayDir, pos, pos + Vec3{ thickness, arrowLen, thickness }, t)) activeAxis = Y;
-            else if (rayIntersectAABB(rayOrigin, rayDir, pos, pos + Vec3{ thickness, thickness, arrowLen }, t)) activeAxis = Z;
+            const float shaftLen = ArrowConfig::shaftLen;
+            const float tipHeight = ArrowConfig::tipHeight;
+            const float totalLen = shaftLen + tipHeight;
+            const float hitboxThickness = ArrowConfig::tipSize;
+            const float halfThick = ArrowConfig::halfThick;
+
+            // X-Axis Hitbox
+            Vec3 xMin = pos + Vec3{ 0.0f, -halfThick, -halfThick };
+            Vec3 xMax = pos + Vec3{ totalLen, halfThick, halfThick };
+
+            // Y-Axis Hitbox
+            Vec3 yMin = pos + Vec3{ -halfThick, 0.0f, -halfThick };
+            Vec3 yMax = pos + Vec3{ halfThick, totalLen, halfThick };
+
+            // Z-Axis Hitbox
+            Vec3 zMin = pos + Vec3{ -halfThick, -halfThick, 0.0f };
+            Vec3 zMax = pos + Vec3{ halfThick, halfThick, totalLen };
+
+            if (rayIntersectAABB(rayOrigin, rayDir, xMin, xMax, t)) activeAxis = X;
+            else if (rayIntersectAABB(rayOrigin, rayDir, yMin, yMax, t)) activeAxis = Y;
+            else if (rayIntersectAABB(rayOrigin, rayDir, zMin, zMax, t)) activeAxis = Z;
 
             if (activeAxis != NONE) goto skipSelection;
           }
@@ -813,29 +887,37 @@ int main(int argc, char* argv[]) {
     }
 
     if (selectedObject != nullptr) {
-      glDisable(GL_DEPTH_TEST); // Draw on top of everything
-
+      glDisable(GL_DEPTH_TEST);
       Vec3 pos = selectedObject->position;
 
-      // Draw X (Red)
-      mat4 modelX = mat4::multiplyMat4Mat4(mat4::translate(pos + Vec3{ 1,0,0 }), mat4::scale({ 2, 0.05f, 0.05f }));
-      glUniform3f(uColorLoc, 1.0f, 0.0f, 0.0f);
-      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, modelX).m);
-      glDrawArrays(GL_TRIANGLES, 0, 36);
+      float shaftLen = ArrowConfig::shaftLen;  
+      float shaftThick = ArrowConfig::shaftThick; 
+      float tipSize = ArrowConfig::tipSize;   
+      float tipHeight = ArrowConfig::tipHeight;  
 
-      // Draw Y (Green)
-      mat4 modelY = mat4::multiplyMat4Mat4(mat4::translate(pos + Vec3{ 0,1,0 }), mat4::scale({ 0.05f, 2, 0.05f }));
-      glUniform3f(uColorLoc, 0.0f, 1.0f, 0.0f);
-      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, modelY).m);
-      glDrawArrays(GL_TRIANGLES, 0, 36);
+      auto drawAxis = [&](Vec3 color, mat4 rotation, Vec3 direction) {
+        glUniform3f(uColorLoc, color.x, color.y, color.z);
 
-      // Draw Z (Blue)
-      mat4 modelZ = mat4::multiplyMat4Mat4(mat4::translate(pos + Vec3{ 0,0,1 }), mat4::scale({ 0.05f, 0.05f, 2 }));
-      glUniform3f(uColorLoc, 0.0f, 0.0f, 1.0f);
-      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, modelZ).m);
-      glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(vao);
+        mat4 sScale = mat4::scale({ shaftThick, shaftLen, shaftThick });
+        mat4 sModel = mat4::multiplyMat4Mat4(mat4::translate(pos + direction * (shaftLen / 2.0f)),
+          mat4::multiplyMat4Mat4(rotation, sScale));
+        glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, sModel).m);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-      glEnable(GL_DEPTH_TEST); // Re-enable for next frame
+        glBindVertexArray(pyramidVao);
+        mat4 tScale = mat4::scale({ tipSize, tipHeight, tipSize });
+        mat4 tModel = mat4::multiplyMat4Mat4(mat4::translate(pos + direction * shaftLen),
+          mat4::multiplyMat4Mat4(rotation, tScale));
+        glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, tModel).m);
+        glDrawArrays(GL_TRIANGLES, 0, 18);
+        };
+
+      drawAxis({ 1, 0, 0 }, mat4::rotateZ(-90), { 1, 0, 0 });
+      drawAxis({ 0, 1, 0 }, mat4(), { 0, 1, 0 });
+      drawAxis({ 0, 0, 1 }, mat4::rotateX(90), { 0, 0, 1 });
+
+      glEnable(GL_DEPTH_TEST);
     }
 
     // restore
