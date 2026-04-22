@@ -6,6 +6,7 @@
 #include "imgui_impl_opengl3.h"
 #include <vector>
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 
 GLuint compileShader(GLenum type, const char* src) {
@@ -353,6 +354,7 @@ public:
   Vec3 getPosition() const { return position; };
   Vec3 getForward() const { return forward; };
   Vec3 getUp() const { return up; };
+  Vec3 getRight() const { return right; };
 };
 
 enum ShapeType {
@@ -371,9 +373,34 @@ class Object {
 };
 
 std::vector<Object> objects;
-int selectedObject = -1;
+Object* selectedObject = nullptr;
 
 bool editorMode = true;
+
+bool rayIntersectAABB(Vec3 rayOrigin, Vec3 rayDir, Vec3 boxMin, Vec3 boxMax, float& tOut) {
+  Vec3 invDir = { 1.0f / rayDir.x, 1.0f / rayDir.y, 1.0f / rayDir.z };
+
+  float t1 = (boxMin.x - rayOrigin.x) * invDir.x;
+  float t2 = (boxMax.x - rayOrigin.x) * invDir.x;
+  float tmin = std::min(t1, t2);
+  float tmax = std::max(t1, t2);
+
+  t1 = (boxMin.y - rayOrigin.y) * invDir.y;
+  t2 = (boxMax.y - rayOrigin.y) * invDir.y;
+  tmin = std::max(tmin, std::min(t1, t2));
+  tmax = std::min(tmax, std::max(t1, t2));
+
+  t1 = (boxMin.z - rayOrigin.z) * invDir.z;
+  t2 = (boxMax.z - rayOrigin.z) * invDir.z;
+  tmin = std::max(tmin, std::min(t1, t2));
+  tmax = std::min(tmax, std::max(t1, t2));
+
+  if (tmax >= tmin && tmax >= 0.0f) {
+    tOut = tmin > 0.0f ? tmin : tmax;
+    return true;
+  }
+  return false;
+}
 
 int main(int argc, char* argv[]) {
   bool running = true;
@@ -474,8 +501,7 @@ int main(int argc, char* argv[]) {
         running = false;
       }
       
-      if (event.type == SDL_WINDOWEVENT &&
-        event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+      if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         width = event.window.data1;
         height = event.window.data2;
         glViewport(0, 0, width, height);
@@ -487,6 +513,50 @@ int main(int argc, char* argv[]) {
       }
       
       ImGui_ImplSDL2_ProcessEvent(&event);
+
+      if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+        if (!ImGui::GetIO().WantCaptureMouse && editorMode) {
+          int mouseX, mouseY;
+          SDL_GetMouseState(&mouseX, &mouseY);
+
+          float aspect = (float)width / (float)height;
+          float fovRad = 90.0f * (M_PI / 180.0f);
+          float halfTan = tanf(fovRad / 2.0f);
+
+          // Convert mouse position to Normalized Device Coordinates (-1 to 1)
+          float px = (2.0f * mouseX / width - 1.0f) * aspect * halfTan;
+          float py = (1.0f - 2.0f * mouseY / height) * halfTan; 
+
+          // Calculate where the ray is pointing
+          Vec3 rayDir = camera.getForward() + camera.getRight() * px + camera.getUp() * py;
+          rayDir = Vec3::normalize(rayDir);
+          Vec3 rayOrigin = camera.getPosition();
+
+          float closestDist = INFINITY;
+          int hitIndex = -1;
+
+          // Check every object to see which one we hit
+          for (int i = 0; i < objects.size(); i++) {
+            Vec3 boxMin = objects[i].position - (objects[i].scale * 0.5f);
+            Vec3 boxMax = objects[i].position + (objects[i].scale * 0.5f);
+
+            float hitDist;
+            if (rayIntersectAABB(rayOrigin, rayDir, boxMin, boxMax, hitDist)) {
+              if (hitDist < closestDist) {
+                closestDist = hitDist;
+                hitIndex = i; 
+              }
+            }
+          }
+
+          if (hitIndex != -1) {
+            selectedObject = &objects[hitIndex];
+          }
+          else {
+            selectedObject = nullptr;
+          }
+        }
+      }
       
       if (!editorMode) {
         input.handleEvent(event);
@@ -530,16 +600,16 @@ int main(int argc, char* argv[]) {
     }
 
     if (!objects.empty()) {
-      ImGui::SliderInt("Selected", &selectedObject, 0, (int)objects.size() - 1);
+      if (selectedObject != nullptr) {
+        ImGui::Separator();
+        ImGui::Text("Transform");
 
-      ImGui::Separator();
-      ImGui::Text("Transform");
+        ImGui::DragFloat3("Position", &selectedObject->position.x, 0.1f);
+        ImGui::DragFloat3("Rotation", &selectedObject->rotation.x, 1.0f);
+        ImGui::DragFloat3("Scale", &selectedObject->scale.x, 0.1f);
 
-      ImGui::DragFloat3("Position", &objects[selectedObject].position.x, 0.1f);
-      ImGui::DragFloat3("Rotation", &objects[selectedObject].rotation.x, 1.0f);
-      ImGui::DragFloat3("Scale", &objects[selectedObject].scale.x, 0.1f);
-
-      ImGui::ColorEdit3("Color", &objects[selectedObject].color.x);
+        ImGui::ColorEdit3("Color", &selectedObject->color.x);
+      }
     }
     ImGui::Text("Objects: %d", (int)objects.size());
     ImGui::Text("FPS: %.1f", (dt > 0.0f) ? (1.0f / dt) : 0.0f);
@@ -590,7 +660,15 @@ int main(int argc, char* argv[]) {
       mat4 model = mat4::multiplyMat4Mat4(T, S);
       mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
-      glUniform3f(uColorLoc, obj.color.x, obj.color.y, obj.color.z);
+      Vec3 renderColor = obj.color;
+
+      if (&obj == selectedObject) {
+        renderColor.x = std::min(1.0f, renderColor.x + 0.3f);
+        renderColor.y = std::min(1.0f, renderColor.y + 0.3f);
+        renderColor.z = std::min(1.0f, renderColor.z + 0.3f);
+      }
+      
+      glUniform3f(uColorLoc, renderColor.x, renderColor.y, renderColor.z);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
