@@ -363,6 +363,13 @@ enum ShapeType {
   rectangle,
 };
 
+enum Axis {
+  NONE,
+  X,
+  Y,
+  Z,
+};
+
 class Object {
   public:
     int id;
@@ -375,7 +382,9 @@ class Object {
 
 std::vector<Object> objects;
 std::vector<int> selectedIDs;
+
 Object* selectedObject = nullptr;
+Axis activeAxis = NONE;
 
 bool editorMode = true;
 
@@ -517,57 +526,79 @@ int main(int argc, char* argv[]) {
       }
       
       ImGui_ImplSDL2_ProcessEvent(&event);
-
+      
       if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
         if (!ImGui::GetIO().WantCaptureMouse && editorMode) {
           int mouseX, mouseY;
           SDL_GetMouseState(&mouseX, &mouseY);
 
+          // Ray Calculation
           float aspect = (float)width / (float)height;
           float fovRad = 90.0f * (M_PI / 180.0f);
           float halfTan = tanf(fovRad / 2.0f);
-
           float px = (2.0f * mouseX / width - 1.0f) * aspect * halfTan;
-          float py = (1.0f - 2.0f * mouseY / height) * halfTan; 
-
-          Vec3 rayDir = camera.getForward() + camera.getRight() * px + camera.getUp() * py;
-          rayDir = Vec3::normalize(rayDir);
+          float py = (1.0f - 2.0f * mouseY / height) * halfTan;
+          Vec3 rayDir = Vec3::normalize(camera.getForward() + camera.getRight() * px + camera.getUp() * py);
           Vec3 rayOrigin = camera.getPosition();
+
+          if (selectedObject != nullptr) {
+            float t;
+            Vec3 pos = selectedObject->position;
+            const float arrowLen = 2.0f;
+            const float thickness = 0.25f;
+
+            if (rayIntersectAABB(rayOrigin, rayDir, pos, pos + Vec3{ arrowLen, thickness, thickness }, t)) activeAxis = X;
+            else if (rayIntersectAABB(rayOrigin, rayDir, pos, pos + Vec3{ thickness, arrowLen, thickness }, t)) activeAxis = Y;
+            else if (rayIntersectAABB(rayOrigin, rayDir, pos, pos + Vec3{ thickness, thickness, arrowLen }, t)) activeAxis = Z;
+
+            if (activeAxis != NONE) goto skipSelection;
+          }
 
           float closestDist = INFINITY;
           int hitIndex = -1;
-
-          for (int i = 0; i < objects.size(); i++) {
+          for (int i = 0; i < (int)objects.size(); i++) {
             Vec3 boxMin = objects[i].position - (objects[i].scale * 0.5f);
             Vec3 boxMax = objects[i].position + (objects[i].scale * 0.5f);
-
             float hitDist;
             if (rayIntersectAABB(rayOrigin, rayDir, boxMin, boxMax, hitDist)) {
-              if (hitDist < closestDist) {
-                closestDist = hitDist;
-                hitIndex = i; 
-              }
+              if (hitDist < closestDist) { closestDist = hitDist; hitIndex = i; }
             }
           }
 
           if (hitIndex != -1) {
             selectedObject = &objects[hitIndex];
-            int hitID = objects[hitIndex].id;
-
-            if (SDL_GetModState() & KMOD_CTRL) {
-              if (std::find(selectedIDs.begin(), selectedIDs.end(), hitID) == selectedIDs.end()) {
-                selectedIDs.push_back(hitID);
-              }
-            }
-            else {
-              selectedIDs.clear();
-              selectedIDs.push_back(hitID);
-            }
+            if (!(SDL_GetModState() & KMOD_CTRL)) selectedIDs.clear();
+            selectedIDs.push_back(objects[hitIndex].id);
           }
-          else {
-            if (!(SDL_GetModState() & KMOD_CTRL)) {
-              selectedObject = nullptr;
-              selectedIDs.clear();
+          else if (!(SDL_GetModState() & KMOD_CTRL)) {
+            selectedObject = nullptr;
+            selectedIDs.clear();
+          }
+
+        skipSelection:;
+        }
+      }
+
+      if (event.type == SDL_MOUSEBUTTONUP) {
+        activeAxis = NONE;
+      }
+
+      if (event.type == SDL_MOUSEMOTION && activeAxis != NONE) {
+        float sensitivity = 0.01f;
+        float dx = (float)event.motion.xrel * sensitivity;
+        float dy = (float)-event.motion.yrel * sensitivity; 
+
+        Vec3 delta = { 0, 0, 0 };
+        if (activeAxis == X) delta.x = dx + dy; 
+        if (activeAxis == Y) delta.y = dy;
+        if (activeAxis == Z) delta.z = -(dx + dy);
+
+        if (selectedObject) {
+          selectedObject->position += delta;
+          for (auto& obj : objects) {
+            bool isMultiSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+            if (isMultiSel && &obj != selectedObject) {
+              obj.position += delta;
             }
           }
         }
@@ -637,7 +668,6 @@ int main(int argc, char* argv[]) {
         if (ImGui::DragFloat3("Position", &selectedObject->position.x, 0.1f)) {
           Vec3 delta = selectedObject->position - oldPos;
           for (auto& obj : objects) {
-            // Apply delta to all selected objects EXCEPT the one we just dragged
             bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
             if (isSel && &obj != selectedObject) {
               obj.position += delta;
@@ -780,6 +810,32 @@ int main(int argc, char* argv[]) {
       glUniform3f(uColorLoc, 0.05f, 0.05f, 0.05f);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
       glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    if (selectedObject != nullptr) {
+      glDisable(GL_DEPTH_TEST); // Draw on top of everything
+
+      Vec3 pos = selectedObject->position;
+
+      // Draw X (Red)
+      mat4 modelX = mat4::multiplyMat4Mat4(mat4::translate(pos + Vec3{ 1,0,0 }), mat4::scale({ 2, 0.05f, 0.05f }));
+      glUniform3f(uColorLoc, 1.0f, 0.0f, 0.0f);
+      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, modelX).m);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+
+      // Draw Y (Green)
+      mat4 modelY = mat4::multiplyMat4Mat4(mat4::translate(pos + Vec3{ 0,1,0 }), mat4::scale({ 0.05f, 2, 0.05f }));
+      glUniform3f(uColorLoc, 0.0f, 1.0f, 0.0f);
+      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, modelY).m);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+
+      // Draw Z (Blue)
+      mat4 modelZ = mat4::multiplyMat4Mat4(mat4::translate(pos + Vec3{ 0,0,1 }), mat4::scale({ 0.05f, 0.05f, 2 }));
+      glUniform3f(uColorLoc, 0.0f, 0.0f, 1.0f);
+      glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, modelZ).m);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+
+      glEnable(GL_DEPTH_TEST); // Re-enable for next frame
     }
 
     // restore
