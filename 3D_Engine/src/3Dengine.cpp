@@ -7,51 +7,8 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <iterator>
 #include <iostream>
-
-GLuint compileShader(GLenum type, const char* src) {
-  GLuint shader = glCreateShader(type);
-  glShaderSource(shader, 1, &src, nullptr);
-  glCompileShader(shader);
-
-  int ok;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
-  
-  if (!ok) {
-    char log[512];
-    glGetShaderInfoLog(shader, 512, nullptr, log);
-    std::cout << "Shader compile error:\n" << log << "\n";
-  }
-
-  return shader;
-}
-
-GLuint crateProgram(const char* vsSrc, const char* fsSrc) {
-  GLuint vs = compileShader(GL_VERTEX_SHADER, vsSrc);
-  GLuint fs = compileShader(GL_FRAGMENT_SHADER, fsSrc);
-
-  GLuint program = glCreateProgram();
-  glAttachShader(program, vs);
-  glAttachShader(program, fs);
-  glLinkProgram(program);
-
-  int ok;
-  glGetProgramiv(program, GL_LINK_STATUS, &ok);
-  if (!ok) {
-    char log[512];
-    glGetProgramInfoLog(program, 512, nullptr, log);
-    std::cout << "Program link error:\n" << log << "\n";
-  }
-
-  glDeleteShader(vs);
-  glDeleteShader(fs);
-
-  return program;
-}
-
-struct Vec4 {
-  float x, y, z, w;
-};
 
 struct Vec3 {
   float x, y, z;
@@ -99,6 +56,100 @@ struct Vec3 {
   static float dot(Vec3 a, Vec3 b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
   }
+};
+
+struct ArrowConfig {
+  static constexpr float shaftLen = 0.8f;
+  static constexpr float shaftThick = 0.04f;
+  static constexpr float tipSize = 0.12f;
+  static constexpr float tipHeight = 0.25f;
+  static constexpr float halfThick = tipSize / 2.0f;
+};
+
+struct GlobalConfig {
+  static constexpr int windowWidth = 800;
+  static constexpr int windowHeight = 600;
+  static constexpr int tip1 = 90;
+  static constexpr int tip2 = -90;
+
+  static constexpr float FOV = 90.0f;
+  static constexpr float farClipPlane = 100.0f;
+  static constexpr float nearClipPlane = 0.1f;
+  static constexpr float camSpeed = 3.0f;
+  static constexpr float startingYaw = -90.0f;
+  static constexpr float mouseSens = 0.1f;
+  static constexpr float pitchFlip1 = 89.0f;
+  static constexpr float pitchFlip2 = -pitchFlip1;
+  static constexpr float panelW = 360.0f;
+  static constexpr float panelH = 260.0f;
+  static constexpr float speedV = 0.1f;
+  static constexpr float stepV = 1.0f;
+  static constexpr float halfExtent = 0.5f;
+  static constexpr float movementSensitivity = 0.01f;
+  static constexpr float highlight = 0.3f;
+  static constexpr float outlineColor = 0.05f;
+  static constexpr float glLineW = 2.0f;
+  static constexpr float pad = 12.0f;
+
+
+  static constexpr Vec3 floorPos = { 0,-0.1f,0 };
+  static constexpr Vec3 floorScale = { 20,0.2f,20 };
+  static constexpr Vec3 floorColor = { 0.2f,0.2f,0.2f };
+
+  static constexpr Vec3 palette[] = {
+    {1.0f, 0.0f, 0.0f}, // Red
+    {0.0f, 1.0f, 0.0f}, // Green
+    {0.0f, 0.0f, 1.0f}, // Blue
+    {1.0f, 1.0f, 0.0f}, // Yellow
+    {1.0f, 0.5f, 0.0f}, // Orange
+    {0.5f, 0.0f, 0.5f}, // Purple
+    {1.0f, 1.0f, 1.0f}, // White
+    {0.1f, 0.1f, 0.1f}  // Dark Gray
+  };
+};
+
+GLuint compileShader(GLenum type, const char* src) {
+  GLuint shader = glCreateShader(type);
+  glShaderSource(shader, 1, &src, nullptr);
+  glCompileShader(shader);
+
+  int ok;
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
+  
+  if (!ok) {
+    char log[512];
+    glGetShaderInfoLog(shader, 512, nullptr, log);
+    std::cout << "Shader compile error:\n" << log << "\n";
+  }
+
+  return shader;
+}
+
+GLuint crateProgram(const char* vsSrc, const char* fsSrc) {
+  GLuint vs = compileShader(GL_VERTEX_SHADER, vsSrc);
+  GLuint fs = compileShader(GL_FRAGMENT_SHADER, fsSrc);
+
+  GLuint program = glCreateProgram();
+  glAttachShader(program, vs);
+  glAttachShader(program, fs);
+  glLinkProgram(program);
+
+  int ok;
+  glGetProgramiv(program, GL_LINK_STATUS, &ok);
+  if (!ok) {
+    char log[512];
+    glGetProgramInfoLog(program, 512, nullptr, log);
+    std::cout << "Program link error:\n" << log << "\n";
+  }
+
+  glDeleteShader(vs);
+  glDeleteShader(fs);
+
+  return program;
+}
+
+struct Vec4 {
+  float x, y, z, w;
 };
 
 struct mat4 {
@@ -231,14 +282,6 @@ struct mat4 {
   }
 };
 
-struct ArrowConfig {
-  static constexpr float shaftLen = 0.8f;  
-  static constexpr float shaftThick = 0.04f;
-  static constexpr float tipSize = 0.12f;
-  static constexpr float tipHeight = 0.25f;
-  static constexpr float halfThick = tipSize / 2.0f;
-};
-
 class Window {
 private:
   SDL_Window* window = nullptr;
@@ -256,7 +299,7 @@ public:
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+    window = SDL_CreateWindow("3D Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, GlobalConfig::windowWidth, GlobalConfig::windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     if (!window) {
       std::cout << "Window couldn't be created" << SDL_GetError() << "\n";
@@ -348,9 +391,9 @@ private:
   float speed;
   Vec3 worldUp = { 0,1,0 };
 
-  float yaw = -90.0f;
+  float yaw = GlobalConfig::startingYaw;
   float pitch = 0.0f;
-  float sensitivity = 0.1f;
+  float sensitivity = GlobalConfig::mouseSens;
 
 public:
   Camera(Vec3 pos, Vec3 forw, Vec3 up_, float spd) {
@@ -457,7 +500,7 @@ int main(int argc, char* argv[]) {
   bool running = true;
   SDL_Event event;
   InputManager input;
-  Camera camera({ 0,1.5f,3 }, { 0,0,-1 }, { 0,1,0 }, 3.0f);
+  Camera camera({ 0,1.5f,3 }, { 0,0,-1 }, { 0,1,0 }, GlobalConfig::camSpeed);
   Window window;
   Vec3 floorPos = { 0,-0.1,0 };
   Vec3 floorSize = { 20,0.2,20 };
@@ -592,7 +635,7 @@ int main(int argc, char* argv[]) {
 
           // Ray Calculation
           float aspect = (float)width / (float)height;
-          float fovRad = 90.0f * (M_PI / 180.0f);
+          float fovRad = GlobalConfig::FOV * (M_PI / 180.0f);
           float halfTan = tanf(fovRad / 2.0f);
           float px = (2.0f * mouseX / width - 1.0f) * aspect * halfTan;
           float py = (1.0f - 2.0f * mouseY / height) * halfTan;
@@ -658,7 +701,7 @@ int main(int argc, char* argv[]) {
       }
 
       if (event.type == SDL_MOUSEMOTION && activeAxis != NONE) {
-        float sensitivity = 0.01f;
+        float sensitivity = GlobalConfig::movementSensitivity;
         float dx = (float)event.motion.xrel * sensitivity;
         float dy = (float)-event.motion.yrel * sensitivity; 
 
@@ -691,12 +734,8 @@ int main(int argc, char* argv[]) {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    const float panelW = 360.0f;
-    const float panelH = 260.0f;
-    const float pad = 12.0f;
-
-    ImGui::SetNextWindowPos(ImVec2(pad, pad), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(panelW, panelH), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(GlobalConfig::pad, GlobalConfig::pad), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(GlobalConfig::panelW, GlobalConfig::panelH), ImGuiCond_Always);
 
     ImGuiWindowFlags flags =
       ImGuiWindowFlags_NoResize |
@@ -717,7 +756,7 @@ int main(int argc, char* argv[]) {
       Object obj;
       obj.id = nextID;
       obj.shape = cube;
-      obj.position = { (float)objects.size() * 1.0f, 0.5f, 0.0f };
+      obj.position = { (float)objects.size() * 1.0f, GlobalConfig::halfExtent, 0.0f };
       obj.rotation = { 0,0,0 };
       obj.scale = { 1,1,1 };
       obj.color = { 0.9f, 0.7f, 0.2f };
@@ -783,6 +822,27 @@ int main(int argc, char* argv[]) {
           }
         }
         
+        int paletteSize = sizeof(GlobalConfig::palette) / sizeof(GlobalConfig::palette[0]);
+        ImGui::Text("Quick Palette:");
+        for (int n = 0; n < paletteSize; n++) {
+          ImGui::PushID(n);
+
+          if (ImGui::ColorButton("##palette", ImVec4(GlobalConfig::palette[n].x, GlobalConfig::palette[n].y, GlobalConfig::palette[n].z, 1.0f))) {
+            selectedObject->color = GlobalConfig::palette[n];
+
+            for (auto& obj : objects) {
+              bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
+              if (isSel) {
+                obj.color = GlobalConfig::palette[n];
+              }
+            }
+          }
+
+          if ((n + 1) % 8 != 0) ImGui::SameLine();
+
+          ImGui::PopID();
+        }
+
         if (ImGui::Button("Delete Selected")) {
           if (!selectedIDs.empty()) {
             objects.erase(
@@ -811,10 +871,10 @@ int main(int argc, char* argv[]) {
     input.resetMouse();
  
     mat4 projection = mat4::perspective(
-      90.0f,
+      GlobalConfig::FOV,
       (float)width / (float)height,
-      0.1f,
-      100.0f
+      GlobalConfig::nearClipPlane,
+      GlobalConfig::farClipPlane
     );
     mat4 view = mat4::lookAt(camera.getPosition(), camera.getPosition() + camera.getForward(), camera.getUp());
 
@@ -854,9 +914,9 @@ int main(int argc, char* argv[]) {
       bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
 
       if (isSel) {
-        renderColor.x = std::min(1.0f, renderColor.x + 0.3f);
-        renderColor.y = std::min(1.0f, renderColor.y + 0.3f);
-        renderColor.z = std::min(1.0f, renderColor.z + 0.3f);
+        renderColor.x = std::min(1.0f, renderColor.x + GlobalConfig::highlight);
+        renderColor.y = std::min(1.0f, renderColor.y + GlobalConfig::highlight);
+        renderColor.z = std::min(1.0f, renderColor.z + GlobalConfig::highlight);
       }
       
       glUniform3f(uColorLoc, renderColor.x, renderColor.y, renderColor.z);
@@ -871,7 +931,7 @@ int main(int argc, char* argv[]) {
 
     glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glLineWidth(2.0f);
+    glLineWidth(GlobalConfig::glLineW);
 
     for (const auto& obj : objects) {
       if (obj.shape != cube) continue;
@@ -881,7 +941,7 @@ int main(int argc, char* argv[]) {
       mat4 model = mat4::multiplyMat4Mat4(T, S);
       mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
-      glUniform3f(uColorLoc, 0.05f, 0.05f, 0.05f);
+      glUniform3f(uColorLoc, GlobalConfig::outlineColor, GlobalConfig::outlineColor, GlobalConfig::outlineColor);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
@@ -900,7 +960,7 @@ int main(int argc, char* argv[]) {
 
         glBindVertexArray(vao);
         mat4 sScale = mat4::scale({ shaftThick, shaftLen, shaftThick });
-        mat4 sModel = mat4::multiplyMat4Mat4(mat4::translate(pos + direction * (shaftLen / 2.0f)),
+        mat4 sModel = mat4::multiplyMat4Mat4(mat4::translate(pos + direction * (shaftLen * GlobalConfig::halfExtent)),
           mat4::multiplyMat4Mat4(rotation, sScale));
         glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mat4::multiplyMat4Mat4(vp, sModel).m);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -913,9 +973,9 @@ int main(int argc, char* argv[]) {
         glDrawArrays(GL_TRIANGLES, 0, 18);
         };
 
-      drawAxis({ 1, 0, 0 }, mat4::rotateZ(-90), { 1, 0, 0 });
+      drawAxis({ 1, 0, 0 }, mat4::rotateZ(GlobalConfig::tip2), { 1, 0, 0 });
       drawAxis({ 0, 1, 0 }, mat4(), { 0, 1, 0 });
-      drawAxis({ 0, 0, 1 }, mat4::rotateX(90), { 0, 0, 1 });
+      drawAxis({ 0, 0, 1 }, mat4::rotateX(GlobalConfig::tip1), { 0, 0, 1 });
 
       glEnable(GL_DEPTH_TEST);
     }
