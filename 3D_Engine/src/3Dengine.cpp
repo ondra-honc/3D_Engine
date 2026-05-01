@@ -703,12 +703,17 @@ int main(int argc, char* argv[]) {
       if (event.type == SDL_MOUSEMOTION && activeAxis != NONE) {
         float sensitivity = GlobalConfig::movementSensitivity;
         float dx = (float)event.motion.xrel * sensitivity;
-        float dy = (float)-event.motion.yrel * sensitivity; 
+        float dy = (float)-event.motion.yrel * sensitivity;
 
-        Vec3 delta = { 0, 0, 0 };
-        if (activeAxis == X) delta.x = dx + dy; 
-        if (activeAxis == Y) delta.y = dy;
-        if (activeAxis == Z) delta.z = -(dx + dy);
+        Vec3 dragWorld = camera.getRight() * dx + camera.getUp() * dy;
+
+        Vec3 axisDir = { 0, 0, 0 };
+        if (activeAxis == X) axisDir = { 1, 0, 0 };
+        if (activeAxis == Y) axisDir = { 0, 1, 0 };
+        if (activeAxis == Z) axisDir = { 0, 0, 1 };
+
+        float move = Vec3::dot(dragWorld, axisDir);
+        Vec3 delta = axisDir * move;
 
         if (selectedObject) {
           selectedObject->position += delta;
