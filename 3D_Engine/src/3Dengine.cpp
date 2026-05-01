@@ -10,6 +10,52 @@
 #include <iterator>
 #include <iostream>
 
+struct SphereMesh {
+  std::vector<float> verts;
+  std::vector<unsigned int> indices;
+};
+
+SphereMesh makeSphere(int stacks = 16, int slices = 24) {
+  SphereMesh mesh;
+
+  for (int y = 0; y <= stacks; ++y) {
+    float v = (float)y / stacks;
+    float phi = v * M_PI;
+
+    for (int x = 0; x <= slices; ++x) {
+      float u = (float)x / slices;
+      float theta = u * 2.0f * M_PI;
+
+      float sx = sinf(phi) * cosf(theta);
+      float sy = cosf(phi);
+      float sz = sinf(phi) * sinf(theta);
+
+      mesh.verts.push_back(sx * 0.5f);
+      mesh.verts.push_back(sy * 0.5f);
+      mesh.verts.push_back(sz * 0.5f);
+    }
+  }
+
+  for (int y = 0; y < stacks; ++y) {
+    for (int x = 0; x < slices; ++x) {
+      int i0 = y * (slices + 1) + x;
+      int i1 = i0 + 1;
+      int i2 = i0 + slices + 1;
+      int i3 = i2 + 1;
+
+      mesh.indices.push_back(i0);
+      mesh.indices.push_back(i2);
+      mesh.indices.push_back(i1);
+
+      mesh.indices.push_back(i1);
+      mesh.indices.push_back(i2);
+      mesh.indices.push_back(i3);
+    }
+  }
+
+  return mesh;
+}
+
 struct Vec3 {
   float x, y, z;
 
@@ -605,6 +651,25 @@ int main(int argc, char* argv[]) {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
+  SphereMesh sphereMesh = makeSphere(16, 24);
+
+  GLuint sphereVao, sphereVbo, sphereEbo;
+  glGenVertexArrays(1, &sphereVao);
+  glGenBuffers(1, &sphereVbo);
+  glGenBuffers(1, &sphereEbo);
+
+  glBindVertexArray(sphereVao);
+  glBindBuffer(GL_ARRAY_BUFFER, sphereVbo);
+  glBufferData(GL_ARRAY_BUFFER, sphereMesh.verts.size() * sizeof(float), sphereMesh.verts.data(), GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEbo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereMesh.indices.size() * sizeof(unsigned int), sphereMesh.indices.data(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  glBindVertexArray(0);
+
   glEnable(GL_DEPTH_TEST);
 
   float lastTick = SDL_GetTicks();
@@ -934,8 +999,6 @@ int main(int argc, char* argv[]) {
     glDepthMask(GL_TRUE);
 
     for (const auto& obj : objects) {
-      if (obj.shape != cube && obj.shape != rectangle) continue;
-
       mat4 T = mat4::translate(obj.position);
       mat4 Rx = mat4::rotateX(obj.rotation.x);
       mat4 Ry = mat4::rotateY(obj.rotation.y);
@@ -947,18 +1010,24 @@ int main(int argc, char* argv[]) {
       mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
       Vec3 renderColor = obj.color;
-
       bool isSel = std::find(selectedIDs.begin(), selectedIDs.end(), obj.id) != selectedIDs.end();
-
       if (isSel) {
         renderColor.x = std::min(1.0f, renderColor.x + GlobalConfig::highlight);
         renderColor.y = std::min(1.0f, renderColor.y + GlobalConfig::highlight);
         renderColor.z = std::min(1.0f, renderColor.z + GlobalConfig::highlight);
       }
-      
+
       glUniform3f(uColorLoc, renderColor.x, renderColor.y, renderColor.z);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
-      glDrawArrays(GL_TRIANGLES, 0, 36);
+
+      if (obj.shape == cube || obj.shape == rectangle) {
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+      }
+      else if (obj.shape == sphere) {
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, (GLsizei)sphereMesh.indices.size(), GL_UNSIGNED_INT, 0);
+      }
     }
 
     // --- PASS 2: wireframe outline overlay ---
@@ -971,8 +1040,6 @@ int main(int argc, char* argv[]) {
     glLineWidth(GlobalConfig::glLineW);
 
     for (const auto& obj : objects) {
-      if (obj.shape != cube && obj.shape != rectangle) continue;
-
       mat4 T = mat4::translate(obj.position);
       mat4 Rx = mat4::rotateX(obj.rotation.x);
       mat4 Ry = mat4::rotateY(obj.rotation.y);
@@ -985,17 +1052,30 @@ int main(int argc, char* argv[]) {
 
       glUniform3f(uColorLoc, GlobalConfig::outlineColor, GlobalConfig::outlineColor, GlobalConfig::outlineColor);
       glUniformMatrix4fv(uMVPLoc, 1, GL_FALSE, mvpObj.m);
-      glDrawArrays(GL_TRIANGLES, 0, 36);
+
+      if (obj.shape == cube || obj.shape == rectangle) {
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+      }
+      else if (obj.shape == sphere) {
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, (GLsizei)sphereMesh.indices.size(), GL_UNSIGNED_INT, 0);
+      }
     }
 
     if (selectedObject != nullptr) {
+      // make sure we draw solid, not wireframe
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      glDepthMask(GL_TRUE);
+      glDepthFunc(GL_LESS);
+
       glDisable(GL_DEPTH_TEST);
       Vec3 pos = selectedObject->position;
 
-      float shaftLen = ArrowConfig::shaftLen;  
-      float shaftThick = ArrowConfig::shaftThick; 
-      float tipSize = ArrowConfig::tipSize;   
-      float tipHeight = ArrowConfig::tipHeight;  
+      float shaftLen = ArrowConfig::shaftLen;
+      float shaftThick = ArrowConfig::shaftThick;
+      float tipSize = ArrowConfig::tipSize;
+      float tipHeight = ArrowConfig::tipHeight;
 
       auto drawAxis = [&](Vec3 color, mat4 rotation, Vec3 direction) {
         glUniform3f(uColorLoc, color.x, color.y, color.z);
