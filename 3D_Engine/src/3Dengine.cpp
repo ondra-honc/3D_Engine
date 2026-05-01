@@ -752,6 +752,8 @@ int main(int argc, char* argv[]) {
     ImGui::Text("TAB = toggle Editor/Camera");
     ImGui::Text("Mode: %s", editorMode ? "Editor (mouse free)" : "Camera (mouse locked)");
 
+    static bool autoSelectNew = false;
+    ImGui::Checkbox("Auto-select new object", &autoSelectNew);
     if (ImGui::Button("Add Cube")) {
       int currentIndex = -1;
       if (selectedObject != nullptr) {
@@ -768,11 +770,13 @@ int main(int argc, char* argv[]) {
       objects.push_back(obj);
       nextID++;
 
-      if (currentIndex != -1) {
-        selectedObject = &objects[currentIndex];
+      if (autoSelectNew) {
+        selectedObject = &objects.back();
+        selectedIDs = { selectedObject->id };
       }
       else {
-        selectedObject = &objects.back();
+        selectedObject = nullptr;
+        selectedIDs.clear();
       }
     }
 
@@ -793,6 +797,20 @@ int main(int argc, char* argv[]) {
           }
         }
 
+        // --- SHAPE ---
+        const char* shapeItems[] = { "Cube", "Sphere", "Rectangle" };
+        int shapeIndex = (int)selectedObject->shape;
+        if (ImGui::Combo("Shape", &shapeIndex, shapeItems, IM_ARRAYSIZE(shapeItems))) {
+          selectedObject->shape = (ShapeType)shapeIndex;
+
+          if (selectedObject->shape == rectangle) {
+            selectedObject->scale = { 2.0f, 1.0f, 0.5f };
+          }
+          if (selectedObject->shape == cube) {
+            selectedObject->scale = { 1.0f, 1.0f, 1.0f };
+          }
+        }
+
         // --- ROTATION ---
         Vec3 oldRot = selectedObject->rotation;
         if (ImGui::DragFloat3("Rotation", &selectedObject->rotation.x, 1.0f)) {
@@ -804,6 +822,15 @@ int main(int argc, char* argv[]) {
             }
           }
         }
+
+        auto wrap360 = [](float& a) {
+          while (a >= 360.0f) a -= 360.0f;
+          while (a < 0.0f) a += 360.0f;
+          };
+
+        wrap360(selectedObject->rotation.x);
+        wrap360(selectedObject->rotation.y);
+        wrap360(selectedObject->rotation.z);
 
         // --- SCALE ---
         Vec3 oldScale = selectedObject->scale;
@@ -907,11 +934,16 @@ int main(int argc, char* argv[]) {
     glDepthMask(GL_TRUE);
 
     for (const auto& obj : objects) {
-      if (obj.shape != cube) continue;
+      if (obj.shape != cube && obj.shape != rectangle) continue;
 
       mat4 T = mat4::translate(obj.position);
+      mat4 Rx = mat4::rotateX(obj.rotation.x);
+      mat4 Ry = mat4::rotateY(obj.rotation.y);
+      mat4 Rz = mat4::rotateZ(obj.rotation.z);
       mat4 S = mat4::scale(obj.scale);
-      mat4 model = mat4::multiplyMat4Mat4(T, S);
+
+      mat4 R = mat4::multiplyMat4Mat4(Rz, mat4::multiplyMat4Mat4(Ry, Rx));
+      mat4 model = mat4::multiplyMat4Mat4(T, mat4::multiplyMat4Mat4(R, S));
       mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
       Vec3 renderColor = obj.color;
@@ -939,11 +971,16 @@ int main(int argc, char* argv[]) {
     glLineWidth(GlobalConfig::glLineW);
 
     for (const auto& obj : objects) {
-      if (obj.shape != cube) continue;
+      if (obj.shape != cube && obj.shape != rectangle) continue;
 
       mat4 T = mat4::translate(obj.position);
+      mat4 Rx = mat4::rotateX(obj.rotation.x);
+      mat4 Ry = mat4::rotateY(obj.rotation.y);
+      mat4 Rz = mat4::rotateZ(obj.rotation.z);
       mat4 S = mat4::scale(obj.scale);
-      mat4 model = mat4::multiplyMat4Mat4(T, S);
+
+      mat4 R = mat4::multiplyMat4Mat4(Rz, mat4::multiplyMat4Mat4(Ry, Rx));
+      mat4 model = mat4::multiplyMat4Mat4(T, mat4::multiplyMat4Mat4(R, S));
       mat4 mvpObj = mat4::multiplyMat4Mat4(vp, model);
 
       glUniform3f(uColorLoc, GlobalConfig::outlineColor, GlobalConfig::outlineColor, GlobalConfig::outlineColor);
