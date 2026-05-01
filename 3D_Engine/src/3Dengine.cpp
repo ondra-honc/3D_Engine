@@ -104,6 +104,11 @@ struct Vec3 {
   }
 };
 
+bool playMode = false;
+Vec3 playerPos = { 0, 2.0f, 3 };
+Vec3 playerVel = { 0, 0, 0 };
+Vec3 playerSize = { 0.4f, 1.8f, 0.4f };
+
 struct ArrowConfig {
   static constexpr float shaftLen = 0.8f;
   static constexpr float shaftThick = 0.04f;
@@ -478,6 +483,9 @@ public:
     up = Vec3::normalize(Vec3::cross(right, forward));
   }
 
+  void setPosition(Vec3 p) { position = p; }
+  
+  float getSpeed() const { return speed; };
   Vec3 getPosition() const { return position; };
   Vec3 getForward() const { return forward; };
   Vec3 getUp() const { return up; };
@@ -541,6 +549,31 @@ bool rayIntersectAABB(Vec3 rayOrigin, Vec3 rayDir, Vec3 boxMin, Vec3 boxMax, flo
   }
   return false;
 }
+
+bool aabbIntersect(Vec3 minA, Vec3 maxA, Vec3 minB, Vec3 maxB) {
+  return (minA.x <= maxB.x && maxA.x >= minB.x) &&
+    (minA.y <= maxB.y && maxA.y >= minB.y) &&
+    (minA.z <= maxB.z && maxA.z >= minB.z);
+}
+
+bool playerCollides(Vec3 newPos) {
+  Vec3 pMin = newPos - playerSize * 0.5f;
+  Vec3 pMax = newPos + playerSize * 0.5f;
+
+  for (const auto& obj : objects) {
+    Vec3 oMin = obj.position - (obj.scale * 0.5f);
+    Vec3 oMax = obj.position + (obj.scale * 0.5f);
+    if (aabbIntersect(pMin, pMax, oMin, oMax)) return true;
+  }
+  return false;
+}
+
+
+
+
+
+
+
 
 int main(int argc, char* argv[]) {
   bool running = true;
@@ -676,8 +709,10 @@ int main(int argc, char* argv[]) {
 
   while (running) {
     while (SDL_PollEvent(&event) != 0) {
-      if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-        running = false;
+      if
+        (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+        if (playMode) playMode = false;
+        else running = false;
       }
       
       if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
@@ -693,7 +728,7 @@ int main(int argc, char* argv[]) {
       
       ImGui_ImplSDL2_ProcessEvent(&event);
       
-      if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+      if (!playMode && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
         if (!ImGui::GetIO().WantCaptureMouse && editorMode) {
           int mouseX, mouseY;
           SDL_GetMouseState(&mouseX, &mouseY);
@@ -813,10 +848,16 @@ int main(int argc, char* argv[]) {
       ImGuiWindowFlags_NoCollapse;
 
     ImGui::Begin("Editor", nullptr, flags);
-    
+ 
     ImGui::Text("TAB = toggle Editor/Camera");
     ImGui::Text("Mode: %s", editorMode ? "Editor (mouse free)" : "Camera (mouse locked)");
 
+    if (ImGui::Button(playMode ? "Stop" : "Play")) {
+      playMode = !playMode;
+      editorMode = false;
+      SDL_SetRelativeMouseMode(playMode ? SDL_TRUE : SDL_FALSE);
+    }
+    
     static bool autoSelectNew = false;
     ImGui::Checkbox("Auto-select new object", &autoSelectNew);
     if (ImGui::Button("Add Cube")) {
@@ -962,7 +1003,27 @@ int main(int argc, char* argv[]) {
     ImGui::Text("Position: %.2f %.2f %.2f", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
     ImGui::End();
     
-    if (!editorMode) {
+    if (playMode) {
+      Vec3 forward = camera.getForward(); forward.y = 0; forward = Vec3::normalize(forward);
+      Vec3 right = camera.getRight(); right.y = 0; right = Vec3::normalize(right);
+
+      Vec3 move = { 0,0,0 };
+      if (input.isForward()) move += forward;
+      if (input.isBackward()) move -= forward;
+      if (input.isLeft()) move -= right;
+      if (input.isRight()) move += right;
+
+      if (Vec3::length(move) > 0) move = Vec3::normalize(move);
+      Vec3 desired = playerPos + move * (camera.getSpeed() * dt);
+
+      if (!playerCollides(desired)) {
+        playerPos = desired;
+      }
+
+      camera.setPosition(playerPos);
+    }
+
+    if (!editorMode || playMode) {
       camera.cameraUpdate(input, dt);
     }
     input.resetMouse();
@@ -1063,8 +1124,7 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    if (selectedObject != nullptr) {
-      // make sure we draw solid, not wireframe
+    if (!playMode && selectedObject != nullptr) {
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       glDepthMask(GL_TRUE);
       glDepthFunc(GL_LESS);
